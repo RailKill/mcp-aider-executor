@@ -1,5 +1,6 @@
 import type { CallToolResult } from "@modelcontextprotocol/server";
 import { spawn } from "child_process";
+import { APPLICATION_NAME } from "../index.js";
 
 export async function executeCommand(
   command: string,
@@ -47,4 +48,8 @@ export function getTextOutput(
     });
   });
   return output;
+}
+
+export function writeLog(message: string) {
+  process.stderr.write(`[${APPLICATION_NAME}] ${message}\n`);
 }

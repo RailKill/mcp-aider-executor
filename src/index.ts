@@ -36,5 +36,4 @@ main().catch((error) => {
   const errorMessage =
     error instanceof Error ? error.stack || error.message : String(error);
   writeLog(`Failed to start MCP server:\n${errorMessage}\n`);
-  process.exit(1);
 });

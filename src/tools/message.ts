@@ -1,8 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/server";
-import { spawn } from "child_process";
 import { z } from "zod";
-import fs from "fs";
-import path from "path";
+import { executeCommand, getTextOutput } from "../utils/executor.js";
+import { getValidDirectory } from "../utils/filesystem.js";
 
 export function registerMessageTool(
   server: McpServer,
@@ -36,35 +35,11 @@ export function registerMessageTool(
     },
 
     async ({ message, model, files, directory }) => {
-      const rawDir = directory || config.defaultDir || process.cwd();
-      const workingDir = path.resolve(rawDir);
-
-      if (!fs.existsSync(workingDir)) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `Error: The configured project directory ${workingDir} does not exist.`,
-            },
-          ],
-        };
-      }
-
-      const stats = fs.statSync(workingDir);
-      if (!stats.isDirectory()) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `Error: The configured project path ${workingDir} is not a directory.`,
-            },
-          ],
-        };
-      }
-
-      return new Promise((resolve) => {
+      try {
+        const workingDir = await getValidDirectory(
+          directory,
+          config.defaultDir
+        );
         const args = [
           "--message",
           message,
@@ -81,52 +56,27 @@ export function registerMessageTool(
           args.push("--model", selectedModel);
         }
 
-        if (files) {
+        if (files?.length) {
           args.push(...files);
         }
 
-        const child = spawn("aider", args, {
-          shell: true,
-          env: { ...process.env, PYTHONIOENCODING: "utf-8" },
-          cwd: workingDir,
-        });
-
-        let stdout = "";
-        let stderr = "";
-
-        child.stdout.on("data", (data) => {
-          stdout += data.toString();
-        });
-
-        child.stderr.on("data", (data) => {
-          stderr += data.toString();
-        });
-
-        child.on("close", (code) => {
-          if (code === 0) {
-            resolve({
-              content: [{ type: "text", text: stdout }],
-            });
-          } else {
-            resolve({
-              isError: true,
-              content: [
-                { type: "text", text: `Aider exited with code ${code}` },
-                { type: "text", text: stderr },
-              ],
-            });
-          }
-        });
-
-        child.on("error", (error) => {
-          resolve({
-            isError: true,
-            content: [
-              { type: "text", text: `Failed to run Aider: ${error.message}` },
-            ],
-          });
-        });
-      });
+        const { code, stdout, stderr } = await executeCommand(
+          "aider",
+          args,
+          workingDir
+        );
+        if (code === 0) {
+          return getTextOutput(false, stdout);
+        } else {
+          return getTextOutput(true, `Aider exited with code ${code}`, stderr);
+        }
+      } catch (error) {
+        return getTextOutput(
+          true,
+          `Failed to run Aider`,
+          error instanceof Error ? error.message : String(error)
+        );
+      }
     }
   );
 }

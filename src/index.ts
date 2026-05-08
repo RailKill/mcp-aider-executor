@@ -71,7 +71,7 @@ server.registerTool(
         "--no-pretty",
         "--no-stream",
         "--no-show-model-warnings",
-        "--no-check-updates",
+        "--no-check-update",
         "--no-show-release-notes",
       ];
 

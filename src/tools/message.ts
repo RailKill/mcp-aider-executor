@@ -1,6 +1,6 @@
 import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
-import { executeCommand, getTextOutput, writeLog } from "../utils/executor.js";
+import { executeCommand, getTextOutput } from "../utils/executor.js";
 import { getValidDirectory } from "../utils/filesystem.js";
 
 export function registerMessageTool(
@@ -40,7 +40,6 @@ export function registerMessageTool(
           directory,
           config.defaultDir
         );
-        writeLog(`Running Aider in ${workingDir}...`);
 
         const args = [
           "--message",
@@ -62,22 +61,18 @@ export function registerMessageTool(
           args.push(...files);
         }
 
-        writeLog(`Executing: ${["aider", args].join(" ")}`);
         const { code, stdout, stderr } = await executeCommand(
           "aider",
           args,
           workingDir
         );
         if (code === 0) {
-          writeLog(`SUCCESS! ${stdout}`);
           return getTextOutput(false, stdout);
         } else {
-          writeLog(`FAIL (exit code ${code})! ${stderr}`);
           return getTextOutput(true, `Aider exited with code ${code}`, stderr);
         }
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
-        writeLog(`RUN FAILED! ${errorMsg}`);
         return getTextOutput(true, `Failed to run Aider`, errorMsg);
       }
     }

@@ -11,26 +11,38 @@ export function registerMessageTool(
     "message_aider",
     {
       description:
-        "Run the `aider` command with a message prompt to perform code edits. " +
-        "Aider will plan, edit, and git commit changes.",
+        "Executes the `aider` CLI tool to perform automated code edits, planning, and git commits. " +
+        "Use this for complex, multi-file refactors or feature implementations.",
       inputSchema: z.object({
         message: z
           .string()
           .describe(
-            "The instruction for aider (e.g. 'Add error handling to the API route')"
+            "The comprehensive instruction for aider " +
+              "(e.g. 'Refactor the auth middleware to use JWT instead of sessions'). " +
+              "Include specific requirements or context needed for the code change to ensure " +
+              "the edit is accurate on the first try."
           ),
         model: z
           .string()
           .optional()
-          .describe("LLM model to use (e.g. 'openai/gemma-4-E4B-it-IQ4_XS'"),
+          .describe(
+            "The specific model string for aider to use (e.g. 'openai/gemma-4-E4B-it-IQ4_XS'). " +
+              "Only provide if the user explicitly requests a non-default model."
+          ),
         files: z
           .array(z.string())
           .optional()
-          .describe("Files to focus on (relative to directory)"),
+          .describe(
+            "An array of relative file paths to include in the edit session. Omit if unknown. " +
+              "Only list files that currently exist; for new files, describe them in the 'message' instead."
+          ),
         directory: z
           .string()
           .optional()
-          .describe("Path to the working project git repository"),
+          .describe(
+            "The absolute path to the project's git repository. " +
+              "Only provide if the user explicitly specifies a working directory."
+          ),
       }),
     },
 

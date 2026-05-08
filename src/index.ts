@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { McpServer, StdioServerTransport } from "@modelcontextprotocol/server";
 import { cac } from "cac";
 import { registerMessageTool } from "./tools/message.js";

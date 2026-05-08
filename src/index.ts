@@ -1,11 +1,25 @@
 import { McpServer, StdioServerTransport } from "@modelcontextprotocol/server";
+import { cac } from "cac";
 import { spawn } from "child_process";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
 
+// npx console arguments
+const APPLICATION_NAME = "aider-executor";
+const cli = cac(APPLICATION_NAME);
+cli
+  .option("--model <model>", "LLM model to use")
+  .option("--dir <path>", "Working project directory");
+const parsed = cli.parse();
+const config = {
+  defaultModel: parsed.options.model,
+  defaultDir: parsed.options.dir,
+};
+
+// mcp server logic
 const server = new McpServer({
-  name: "aider-executor",
+  name: APPLICATION_NAME,
   version: "1.0.0",
 });
 
@@ -21,7 +35,10 @@ server.registerTool(
         .describe(
           "The instruction for aider (e.g. 'Add error handling to the API route')"
         ),
-      model: z.string().optional().default("gpt-4o"),
+      model: z
+        .string()
+        .optional()
+        .describe("LLM model to use (e.g. 'openai/gemma-4-E4B-it-IQ4_XS'"),
       files: z
         .array(z.string())
         .optional()
@@ -31,9 +48,10 @@ server.registerTool(
   },
 
   async ({ message, model, files, directory }) => {
-    const workingDir = directory ? path.resolve(directory) : process.cwd();
+    const rawDir = directory || config.defaultDir || process.cwd();
+    const workingDir = path.resolve(rawDir);
 
-    if (directory && !fs.existsSync(workingDir)) {
+    if (!fs.existsSync(workingDir)) {
       return {
         isError: true,
         content: [
@@ -47,8 +65,6 @@ server.registerTool(
 
     return new Promise((resolve) => {
       const args = [
-        "--model",
-        model,
         "--message",
         message,
         "--yes",
@@ -58,6 +74,11 @@ server.registerTool(
         "--no-check-updates",
         "--no-show-release-notes",
       ];
+
+      const selectedModel = model || config.defaultModel;
+      if (selectedModel) {
+        args.push("--model", selectedModel);
+      }
 
       if (files) {
         args.push(...files);
@@ -117,7 +138,7 @@ main().catch((error) => {
   const errorMessage =
     error instanceof Error ? error.stack || error.message : String(error);
   process.stderr.write(
-    `Failed to start aider-executor MCP server:\n${errorMessage}\n`
+    `Failed to start ${APPLICATION_NAME} MCP server:\n${errorMessage}\n`
   );
   process.exit(1);
 });

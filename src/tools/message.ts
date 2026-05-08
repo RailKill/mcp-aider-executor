@@ -57,8 +57,8 @@ export function registerMessageTool(
           args.push("--model", selectedModel);
         }
 
-        if (files?.length) {
-          args.push(...files);
+        if (files) {
+          args.push(...files.flatMap((filePath) => ["--file", filePath]));
         }
 
         const { code, stdout, stderr } = await executeCommand(

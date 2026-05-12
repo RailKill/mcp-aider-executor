@@ -7,13 +7,19 @@ import {
   startBackgroundTask,
   TASK_STARTED_MESSAGE,
 } from "../utils/executor.js";
-import { createNewFile, getValidDirectory } from "../utils/filesystem.js";
+import {
+  createNewFile,
+  getValidDirectory,
+  joinPaths,
+} from "../utils/filesystem.js";
 import {
   getProgressLogPath,
   getRunDetailsPath,
   type RunDetails,
 } from "./progress.js";
 import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
+
+const PROMPT_MESSAGE_FILENAME = ".aider.mcp.prompt.txt";
 
 export function registerMessageTool(
   server: McpServer,
@@ -74,9 +80,14 @@ export function registerMessageTool(
 
       try {
         const workingDir = await getValidDirectory(directory);
+        await createNewFile(
+          joinPaths(workingDir, PROMPT_MESSAGE_FILENAME),
+          message
+        );
+
         const args = [
-          "--message",
-          message,
+          "--message-file",
+          PROMPT_MESSAGE_FILENAME,
           "--yes",
           "--no-pretty",
           "--stream",

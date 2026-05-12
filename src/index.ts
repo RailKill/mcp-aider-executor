@@ -2,6 +2,9 @@
 import { McpServer, StdioServerTransport } from "@modelcontextprotocol/server";
 import { cac } from "cac";
 import { registerMessageTool } from "./tools/message.js";
+import { registerConfigTools } from "./tools/configuration.js";
+import { registerGitTools } from "./tools/git.js";
+import { registerProgressTool } from "./tools/progress.js";
 
 // Define console arguments.
 const APPLICATION_NAME = "aider-executor";
@@ -19,6 +22,9 @@ const server = new McpServer({
 registerMessageTool(server, {
   defaultModel: parsed.options.model,
 });
+registerConfigTools(server);
+registerGitTools(server);
+registerProgressTool(server);
 
 // Main function to start the server application.
 async function main() {

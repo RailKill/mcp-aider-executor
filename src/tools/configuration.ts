@@ -293,7 +293,7 @@ export function registerConfigTools(server: McpServer) {
             .string()
             .describe("The absolute path to the git repository."),
         })
-        .extend(AiderConfigurationSchema),
+        .extend(AiderConfigurationSchema.shape),
     },
     async (parameters) => {
       try {

@@ -298,7 +298,7 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
     },
     async (parameters) => {
       if (!isAllowed(parameters.directory, whitelist)) {
-        return getDeniedOutput();
+        return getDeniedOutput(parameters.directory);
       }
 
       try {
@@ -338,7 +338,7 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
     },
     async ({ directory }) => {
       if (!isAllowed(directory, whitelist)) {
-        return getDeniedOutput();
+        return getDeniedOutput(directory);
       }
 
       try {

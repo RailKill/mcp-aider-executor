@@ -69,7 +69,7 @@ export function registerMessageTool(
 
     async ({ directory, message, detached, model, files }) => {
       if (!isAllowed(directory, whitelist)) {
-        return getDeniedOutput();
+        return getDeniedOutput(directory);
       }
 
       try {

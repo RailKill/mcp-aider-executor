@@ -55,7 +55,7 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
 
     async ({ directory, lines }) => {
       if (!isAllowed(directory, whitelist)) {
-        return getDeniedOutput();
+        return getDeniedOutput(directory);
       }
 
       try {

@@ -21,7 +21,7 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
     },
     async ({ directory }) => {
       if (!isAllowed(directory, whitelist)) {
-        return getDeniedOutput();
+        return getDeniedOutput(directory);
       }
 
       try {
@@ -58,7 +58,7 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
     },
     async ({ directory, branch, create }) => {
       if (!isAllowed(directory, whitelist)) {
-        return getDeniedOutput();
+        return getDeniedOutput(directory);
       }
 
       try {
@@ -94,7 +94,7 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
     },
     async ({ directory }) => {
       if (!isAllowed(directory, whitelist)) {
-        return getDeniedOutput();
+        return getDeniedOutput(directory);
       }
 
       try {
@@ -126,7 +126,7 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
     },
     async ({ directory }) => {
       if (!isAllowed(directory, whitelist)) {
-        return getDeniedOutput();
+        return getDeniedOutput(directory);
       }
 
       try {

@@ -114,6 +114,7 @@ export function startBackgroundTask(
       out, // stderr: pipe to log file
     ],
     shell: true,
+    env: { ...process.env, PYTHONIOENCODING: "utf-8", TERM: "dumb" },
   });
 
   child.on("exit", (code) => {

@@ -5,8 +5,9 @@ import {
   runCommandWithStandardizedOutput,
 } from "../utils/executor.js";
 import { getValidDirectory } from "../utils/filesystem.js";
+import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
 
-export function registerGitTools(server: McpServer) {
+export function registerGitTools(server: McpServer, whitelist: string[]) {
   server.registerTool(
     "aider_check_git_status",
     {
@@ -19,6 +20,10 @@ export function registerGitTools(server: McpServer) {
       }),
     },
     async ({ directory }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput();
+      }
+
       try {
         const workingDir = await getValidDirectory(directory);
         return await runCommandWithStandardizedOutput(
@@ -52,6 +57,10 @@ export function registerGitTools(server: McpServer) {
       }),
     },
     async ({ directory, branch, create }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput();
+      }
+
       try {
         const workingDir = await getValidDirectory(directory);
         const args = ["checkout"];
@@ -84,6 +93,10 @@ export function registerGitTools(server: McpServer) {
       }),
     },
     async ({ directory }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput();
+      }
+
       try {
         const workingDir = await getValidDirectory(directory);
         return await runCommandWithStandardizedOutput(
@@ -112,6 +125,10 @@ export function registerGitTools(server: McpServer) {
       }),
     },
     async ({ directory }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput();
+      }
+
       try {
         const workingDir = await getValidDirectory(directory);
         return await runCommandWithStandardizedOutput(

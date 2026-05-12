@@ -13,6 +13,7 @@ import {
   getValidDirectory,
   joinPaths,
 } from "../utils/filesystem.js";
+import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
 
 export const RunDetailsSchema = z.object({
   processId: z.number().nullable().default(null),
@@ -32,7 +33,7 @@ export function getRunDetailsPath(directory: string): string {
   return joinPaths(directory, RUN_DETAILS_FILENAME);
 }
 
-export function registerProgressTool(server: McpServer) {
+export function registerProgressTool(server: McpServer, whitelist: string[]) {
   server.registerTool(
     "aider_check_progress",
     {
@@ -53,6 +54,10 @@ export function registerProgressTool(server: McpServer) {
     },
 
     async ({ directory, lines }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput();
+      }
+
       try {
         // read the progress log file
         const workingDir = await getValidDirectory(directory);

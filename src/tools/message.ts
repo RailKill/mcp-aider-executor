@@ -13,10 +13,12 @@ import {
   getRunDetailsPath,
   type RunDetails,
 } from "./progress.js";
+import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
 
 export function registerMessageTool(
   server: McpServer,
-  config: { defaultModel?: string }
+  whitelist: string[],
+  defaultModel: string | null
 ) {
   server.registerTool(
     "aider_message_prompt",
@@ -66,6 +68,10 @@ export function registerMessageTool(
     },
 
     async ({ directory, message, detached, model, files }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput();
+      }
+
       try {
         const workingDir = await getValidDirectory(directory);
         const args = [
@@ -79,7 +85,7 @@ export function registerMessageTool(
           "--no-show-release-notes",
         ];
 
-        const selectedModel = model || config.defaultModel;
+        const selectedModel = model || defaultModel;
         if (selectedModel) {
           args.push("--model", selectedModel);
         }

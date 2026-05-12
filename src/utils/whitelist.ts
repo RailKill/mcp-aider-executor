@@ -1,0 +1,17 @@
+import pm from "picomatch";
+import { getTextOutput } from "./executor.js";
+import { APPLICATION_NAME } from "../index.js";
+
+export function isAllowed(path: string, whitelist: string[]) {
+  return pm.isMatch(path, whitelist);
+}
+
+export function getDeniedOutput() {
+  return getTextOutput(
+    true,
+    `Access denied. Path is not allowed in the ${APPLICATION_NAME} MCP server whitelist.`,
+    "Tell the user to add the glob path using the '--whitelist <path>' command line argument " +
+      `to the ${APPLICATION_NAME} MCP server.`,
+    "No Aider operations are allowed until the directory is whitelisted."
+  );
+}

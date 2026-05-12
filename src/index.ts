@@ -7,10 +7,16 @@ import { registerGitTools } from "./tools/git.js";
 import { registerProgressTool } from "./tools/progress.js";
 
 // Define console arguments.
-const APPLICATION_NAME = "aider-executor";
+export const APPLICATION_NAME = "aider-executor";
 const cli = cac(APPLICATION_NAME);
 cli.option("--model <model>", "Default LLM model to use");
+cli.option(
+  "--whitelist <path>",
+  "Only allow operations within the path (wildcards allowed)"
+);
 const parsed = cli.parse();
+const whitelist: string[] = [].concat(parsed.options.whitelist || []);
+const defaultModel: string | null = parsed.options.model ?? null;
 
 // Create the MCP server instance.
 const server = new McpServer({
@@ -19,12 +25,10 @@ const server = new McpServer({
 });
 
 // Register the tools available for LLMs to use.
-registerMessageTool(server, {
-  defaultModel: parsed.options.model,
-});
-registerConfigTools(server);
-registerGitTools(server);
-registerProgressTool(server);
+registerMessageTool(server, whitelist, defaultModel);
+registerConfigTools(server, whitelist);
+registerGitTools(server, whitelist);
+registerProgressTool(server, whitelist);
 
 // Main function to start the server application.
 async function main() {

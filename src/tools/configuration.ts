@@ -8,6 +8,7 @@ import {
   joinPaths,
 } from "../utils/filesystem.js";
 import yaml from "yaml";
+import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
 
 export const AIDER_CONF_FILENAME = ".aider.conf.yml";
 
@@ -278,7 +279,7 @@ export const AiderConfigurationSchema = z.object({
   verbose: z.boolean().optional().describe("Enable verbose output."),
 });
 
-export function registerConfigTools(server: McpServer) {
+export function registerConfigTools(server: McpServer, whitelist: string[]) {
   server.registerTool(
     "aider_setup_config_yaml",
     {
@@ -296,6 +297,10 @@ export function registerConfigTools(server: McpServer) {
         .extend(AiderConfigurationSchema.shape),
     },
     async (parameters) => {
+      if (!isAllowed(parameters.directory, whitelist)) {
+        return getDeniedOutput();
+      }
+
       try {
         const workingDir = await getValidDirectory(parameters.directory);
         const cleanData: AiderConfiguration =
@@ -332,6 +337,10 @@ export function registerConfigTools(server: McpServer) {
       }),
     },
     async ({ directory }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput();
+      }
+
       try {
         const workingDir = await getValidDirectory(directory);
         const fullPath = joinPaths(workingDir, AIDER_CONF_FILENAME);

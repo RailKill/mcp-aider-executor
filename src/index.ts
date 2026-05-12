@@ -15,7 +15,7 @@ cli.option(
   "Only allow operations within the path (wildcards allowed)"
 );
 const parsed = cli.parse();
-const whitelist: string[] = [].concat(parsed.options.whitelist || []);
+const whitelist: string[] = [parsed.options.whitelist].flat().filter(Boolean);
 const defaultModel: string | null = parsed.options.model ?? null;
 
 // Create the MCP server instance.

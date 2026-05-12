@@ -9,6 +9,7 @@ import {
 } from "../utils/filesystem.js";
 import yaml from "yaml";
 import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
+import { APPLICATION_NAME } from "../index.js";
 
 export const AIDER_CONF_FILENAME = ".aider.conf.yml";
 
@@ -355,6 +356,24 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
           error,
           "Failed to retrieve Aider configuration YAML"
         );
+      }
+    }
+  );
+
+  server.registerTool(
+    "aider_mcp_check_whitelist",
+    {
+      description: `Gets the list of glob paths configured in the ${APPLICATION_NAME} MCP server whitelist.`,
+      inputSchema: z.object({}),
+    },
+    async () => {
+      try {
+        return getTextOutput(
+          false,
+          `Allowed paths: ${JSON.stringify(whitelist)}`
+        );
+      } catch (error) {
+        return getErrorOutput(error, "Failed to retrieve whitelist");
       }
     }
   );

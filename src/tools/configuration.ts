@@ -61,7 +61,7 @@ export const AiderConfigurationSchema = z.object({
     .optional()
     .describe("Timeout in seconds for API calls (default: None)."),
   "edit-format": z
-    .string()
+    .enum(["whole", "diff", "diff-fenced", "udiff"])
     .optional()
     .describe(
       "Specify what edit format the LLM should use (default depends on model)."
@@ -79,7 +79,7 @@ export const AiderConfigurationSchema = z.object({
       "Specify the model to use for editor tasks (default depends on --model)."
     ),
   "editor-edit-format": z
-    .string()
+    .enum(["editor-whole", "editor-diff", "diff-fenced", "udiff"])
     .optional()
     .describe(
       "Specify the edit format for the editor model (default: depends on editor model)."
@@ -289,8 +289,8 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
         "Do not fill in  the optional arguments if you intend to use Aider's default settings. " +
         "You cannot add API keys using this tool due to security concerns; " +
         "tell the user to add their keys manually in the environment instead. " +
-        "Before calling this tool, you should read the existing Aider configuration file and determine " +
-        "if any existing values need to be carried over.",
+        "Before using this tool, you must call the `aider_read_config_yaml` tool to read the existing " +
+        "Aider configuration file and determine if any existing values need to be carried over.",
       inputSchema: z
         .object({
           directory: z

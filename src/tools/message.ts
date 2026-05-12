@@ -26,7 +26,8 @@ export function registerMessageTool(
         "Use this for complex, multi-file refactors or feature implementations. " +
         "You must always check the progress or status of the previous Aider run in your intended directory. " +
         "You can only use this tool if Aider is not currently running to prevent conflicts. " +
-        "Apply best git practices and stash away any leftover files or switch to a new git branch if needed.",
+        "Apply best git practices and stash away any leftover files or switch to a new git branch if needed. " +
+        "For more options, use the 'aider_setup_config_yaml' tool to set up the configuration instead.",
       inputSchema: z.object({
         directory: z
           .string()

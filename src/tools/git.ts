@@ -103,7 +103,8 @@ export function registerGitTools(server: McpServer) {
     {
       description:
         "Runs the `git stash -u` command to stash uncommitted files in the git repository. " +
-        "Use this when the repository status is dirty and you need a clean working space for Aider to run.",
+        "Use this when the repository status is dirty and you need a clean working space for Aider to run. " +
+        "Do not use this tool while Aider is running.",
       inputSchema: z.object({
         directory: z
           .string()

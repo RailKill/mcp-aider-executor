@@ -51,11 +51,15 @@ export async function getFileTail(
 
 export function getJSONFile(path: string) {
   try {
-    const rawData = fs.readFileSync(path, "utf-8");
+    const rawData = getRawFile(path);
     return JSON.parse(rawData);
   } catch {
     return {};
   }
+}
+
+export function getRawFile(path: string): string {
+  return fs.readFileSync(path, "utf-8");
 }
 
 export function joinPaths(...paths: string[]): string {

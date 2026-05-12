@@ -6,9 +6,7 @@ import { registerMessageTool } from "./tools/message.js";
 // Define console arguments.
 const APPLICATION_NAME = "aider-executor";
 const cli = cac(APPLICATION_NAME);
-cli
-  .option("--model <model>", "LLM model to use")
-  .option("--dir <path>", "Working project directory");
+cli.option("--model <model>", "Default LLM model to use");
 const parsed = cli.parse();
 
 // Create the MCP server instance.
@@ -20,7 +18,6 @@ const server = new McpServer({
 // Register the tools available for LLMs to use.
 registerMessageTool(server, {
   defaultModel: parsed.options.model,
-  defaultDir: parsed.options.dir,
 });
 
 // Main function to start the server application.

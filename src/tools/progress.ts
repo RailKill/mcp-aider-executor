@@ -32,7 +32,7 @@ export function getRunDetailsPath(directory: string): string {
   return joinPaths(directory, RUN_DETAILS_FILENAME);
 }
 
-export function registerProgressTools(server: McpServer) {
+export function registerProgressTool(server: McpServer) {
   server.registerTool(
     "aider_check_progress",
     {

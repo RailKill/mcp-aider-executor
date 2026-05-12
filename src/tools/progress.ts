@@ -10,6 +10,7 @@ import {
   DirectoryError,
   getFileTail,
   getJSONFile,
+  getRawFile,
   getValidDirectory,
   joinPaths,
 } from "../utils/filesystem.js";
@@ -120,6 +121,50 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
           // other error scenarios
           return getErrorOutput(error, "Failed to read the status file.");
         }
+      }
+    }
+  );
+
+  server.registerTool(
+    "aider_check_chat_history",
+    {
+      description:
+        "Reads the entire Aider chat history for a given project. " +
+        "Use this tool if you need to investigate what went wrong while prompting Aider.",
+      inputSchema: z.object({
+        directory: z
+          .string()
+          .describe(
+            "The directory containing the chat history file (usually the same directory as " +
+              "the project's git repository root)."
+          ),
+        chatHistoryFilename: z
+          .string()
+          .default(".aider.chat.history.md")
+          .describe(
+            "The name of the Aider chat history file. If unknown, use the default value " +
+              "or try looking up the Aider configuration YAML for the custom chat history filename."
+          ),
+      }),
+    },
+
+    async ({ directory, chatHistoryFilename }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput(directory);
+      }
+
+      try {
+        // read the progress log file
+        const workingDir = await getValidDirectory(directory);
+        const fullPath = joinPaths(workingDir, chatHistoryFilename);
+        const configData = getRawFile(fullPath);
+        return getTextOutput(
+          false,
+          `Aider chat history successfully retrived from: ${fullPath}`,
+          configData
+        );
+      } catch (error) {
+        return getErrorOutput(error, "Unable to read chat history file");
       }
     }
   );

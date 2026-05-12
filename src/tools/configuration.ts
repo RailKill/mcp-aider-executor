@@ -288,7 +288,9 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
         `Creates or overwrites the ${AIDER_CONF_FILENAME} file in the directory. ` +
         "Do not fill in  the optional arguments if you intend to use Aider's default settings. " +
         "You cannot add API keys using this tool due to security concerns; " +
-        "tell the user to add their keys manually in the environment instead.",
+        "tell the user to add their keys manually in the environment instead. " +
+        "Before calling this tool, you should read the existing Aider configuration file and determine " +
+        "if any existing values need to be carried over.",
       inputSchema: z
         .object({
           directory: z

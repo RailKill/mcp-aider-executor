@@ -73,7 +73,7 @@ export function registerMessageTool(
           message,
           "--yes",
           "--no-pretty",
-          //"--no-stream",
+          "--stream",
           "--no-show-model-warnings",
           "--no-check-update",
           "--no-show-release-notes",

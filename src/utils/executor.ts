@@ -16,7 +16,7 @@ export async function executeCommand(
       const child = spawn(command, args, {
         shell: true,
         cwd,
-        env: { ...process.env, PYTHONIOENCODING: "utf-8" },
+        env: { ...process.env, PYTHONIOENCODING: "utf-8", TERM: "dumb" },
       });
 
       let stdout = "";

@@ -1,10 +1,6 @@
 import type { CallToolResult } from "@modelcontextprotocol/server";
 import { spawn } from "child_process";
 
-export const TASK_STARTED_MESSAGE = "MCP_SIGNAL: TASK_STARTED";
-export const TASK_SUCCESS_MESSAGE = "MCP_SIGNAL: TASK_FINISHED_SUCCESS";
-export const TASK_FAILURE_MESSAGE = "MCP_SIGNAL: TASK_FINISHED_WITH_ERROR";
-
 export async function executeCommand(
   command: string,
   args: string[],
@@ -64,13 +60,6 @@ export function getTextOutput(
     });
   });
   return output;
-}
-
-export function hasCompletionSignal(texts: string[]): boolean {
-  return texts.some(
-    (text) =>
-      text.includes(TASK_SUCCESS_MESSAGE) || text.includes(TASK_FAILURE_MESSAGE)
-  );
 }
 
 export function isProcessAlive(pid: number): boolean {

@@ -95,7 +95,7 @@ describe("executeCommand()", () => {
   });
 
   it("should reject with error if failed to start process", async () => {
-    const errorMessage = "git: 'nonsense' is not a git command.";
+    const errorMessage = "git command not found.";
     const mockProcess = createMockProcess({
       stderr: errorMessage,
       isError: true,

@@ -174,7 +174,7 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
             '--pretty=format:"%h - %an, %ar : %s"',
           ],
           workingDir,
-          "git stash command exited with error"
+          "git log command exited with error"
         );
       } catch (error) {
         return getErrorOutput(error, "Failed to stash uncommitted changes");

@@ -4,7 +4,7 @@ import { APPLICATION_NAME } from "../index.js";
 import { toPosixPath } from "./filesystem.js";
 
 export function isAllowed(path: string, whitelist: string[]) {
-  return pm.isMatch(toPosixPath(path), whitelist);
+  return pm.isMatch(toPosixPath(path), whitelist, { dot: true, unixify: true });
 }
 
 export function getDeniedOutput(path: string) {

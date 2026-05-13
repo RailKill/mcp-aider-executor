@@ -56,10 +56,10 @@ export function registerMessageTool(
           .boolean()
           .default(false)
           .describe(
-            "Architect Mode is a two-stage workflow that separates code reasoning from code editing. " +
+            "Set this to true if the user explicitly requests for architect mode. " +
+              "Architect Mode is a two-stage workflow that separates code reasoning from code editing. " +
               "It uses the main 'model' for high-level planning capabilities and advanced reasoning, " +
-              "then delegates the precise file modifications to a specialized 'editorModel'. " +
-              "Only set this to true if the user explicitly requests for architect mode."
+              "then delegates the precise file modifications to a specialized 'editorModel'."
           ),
         editorModel: z
           .string()

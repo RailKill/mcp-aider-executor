@@ -142,4 +142,43 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
       }
     }
   );
+
+  server.registerTool(
+    "aider_check_git_log",
+    {
+      description:
+        "Retrieves the most recent commit history from the git repository.",
+      inputSchema: z.object({
+        directory: z
+          .string()
+          .describe("The absolute path to the git repository."),
+        count: z
+          .number()
+          .default(5)
+          .describe("Number of recent commits to return."),
+      }),
+    },
+    async ({ directory, count }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput(directory);
+      }
+
+      try {
+        const workingDir = await getValidDirectory(directory);
+        return await runCommandWithStandardizedOutput(
+          "git",
+          [
+            "log",
+            "-n",
+            count.toString(),
+            '--pretty=format:"%h - %an, %ar : %s"',
+          ],
+          workingDir,
+          "git stash command exited with error"
+        );
+      } catch (error) {
+        return getErrorOutput(error, "Failed to stash uncommitted changes");
+      }
+    }
+  );
 }

@@ -11,12 +11,18 @@ export const APPLICATION_NAME = "aider-executor";
 const cli = cac(APPLICATION_NAME);
 cli.option("--model <model>", "Default LLM model to use");
 cli.option(
+  "--add-message-notes",
+  "Appends aider-specific notes to message prompts",
+  { default: true }
+);
+cli.option(
   "--whitelist <path>",
   "Only allow operations within the path (wildcards allowed)"
 );
 const parsed = cli.parse();
 const whitelist: string[] = [parsed.options.whitelist].flat().filter(Boolean);
 const defaultModel: string | null = parsed.options.model ?? null;
+const isAppendMessage: boolean = parsed.options.addMessageNotes;
 
 // Create the MCP server instance.
 const server = new McpServer({
@@ -25,7 +31,7 @@ const server = new McpServer({
 });
 
 // Register the tools available for LLMs to use.
-registerMessageTool(server, whitelist, defaultModel);
+registerMessageTool(server, whitelist, defaultModel, isAppendMessage);
 registerConfigTools(server, whitelist);
 registerGitTools(server, whitelist);
 registerProgressTool(server, whitelist);

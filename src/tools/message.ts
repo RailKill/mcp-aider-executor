@@ -18,7 +18,8 @@ const PROMPT_MESSAGE_FILENAME = ".aider.mcp.prompt.txt";
 export function registerMessageTool(
   server: McpServer,
   whitelist: string[],
-  defaultModel: string | null
+  defaultModel: string | null,
+  isAppendMessage: boolean
 ) {
   server.registerTool(
     "aider_message_prompt",
@@ -73,7 +74,7 @@ export function registerMessageTool(
           "the internal code blocks to avoid conflicting with the outer Aider action blocks.";
         await createNewFile(
           joinPaths(workingDir, PROMPT_MESSAGE_FILENAME),
-          appendedMessage
+          isAppendMessage ? appendedMessage : message
         );
 
         const args = [

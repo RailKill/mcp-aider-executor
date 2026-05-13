@@ -29,8 +29,8 @@ export function registerMessageTool(
         "Executes the `aider` CLI tool to perform automated code edits, planning, and git commits. " +
         "Use this for complex, multi-file refactors or feature implementations. " +
         "You must always check the progress or status of the previous Aider run in your intended directory. " +
-        "You can only use this tool if Aider is not currently running to prevent conflicts. " +
-        "Do not use this tool to check file contents or progress status.",
+        "Do not use this tool if Aider is currently running, or if you don't know Aider's status. " +
+        "Do not use this tool to check file contents.",
       inputSchema: z.object({
         directory: z
           .string()

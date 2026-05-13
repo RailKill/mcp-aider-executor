@@ -6,5 +6,10 @@ export default defineConfig({
     mockReset: true,
     restoreMocks: true,
     globals: false,
+
+    coverage: {
+      provider: "v8",
+      exclude: ["src/**/test-utils.ts"],
+    },
   },
 });

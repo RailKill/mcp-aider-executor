@@ -93,6 +93,12 @@ export function registerMessageTool(
         }
 
         if (files) {
+          for (const filePath of files) {
+            const fullPath = joinPaths(workingDir, filePath);
+            if (!isAllowed(fullPath, whitelist)) {
+              return getDeniedOutput(fullPath);
+            }
+          }
           args.push(...files.flatMap((filePath) => ["--file", filePath]));
         }
 

@@ -69,6 +69,9 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
         // read the progress log file
         const workingDir = await getValidDirectory(directory);
         const chatHistoryFilePath = joinPaths(workingDir, chatHistoryFilename);
+        if (!isAllowed(chatHistoryFilePath, whitelist)) {
+          return getDeniedOutput(chatHistoryFilePath);
+        }
         const chatLines = await getFileTail(chatHistoryFilePath, lines);
 
         // read the run details json

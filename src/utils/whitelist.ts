@@ -1,9 +1,10 @@
 import pm from "picomatch";
 import { getTextOutput } from "./executor.js";
 import { APPLICATION_NAME } from "../index.js";
+import { toPosixPath } from "./filesystem.js";
 
 export function isAllowed(path: string, whitelist: string[]) {
-  return pm.isMatch(path, whitelist);
+  return pm.isMatch(toPosixPath(path), whitelist);
 }
 
 export function getDeniedOutput(path: string) {

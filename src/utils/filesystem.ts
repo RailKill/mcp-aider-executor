@@ -15,7 +15,7 @@ export async function createNewFile(path: string, content: string = "") {
 }
 
 export async function getValidDirectory(directory: string): Promise<string> {
-  const resolvedPath = path.resolve(directory);
+  const resolvedPath = toPosixPath(path.resolve(directory));
 
   if (!fs.existsSync(resolvedPath)) {
     throw new DirectoryError(`Directory does not exist: ${resolvedPath}`);
@@ -63,5 +63,10 @@ export function getRawFile(path: string): string {
 }
 
 export function joinPaths(...paths: string[]): string {
-  return path.join(...paths);
+  const standardizedPaths = paths.map(toPosixPath);
+  return path.posix.join(...standardizedPaths);
+}
+
+export function toPosixPath(path: string): string {
+  return path.replace(/\\+/g, "/");
 }

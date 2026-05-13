@@ -5,6 +5,7 @@ import { registerMessageTool } from "./tools/message.js";
 import { registerConfigTools } from "./tools/configuration.js";
 import { registerGitTools } from "./tools/git.js";
 import { registerProgressTool } from "./tools/progress.js";
+import { toPosixPath } from "./utils/filesystem.js";
 
 // Define console arguments.
 export const APPLICATION_NAME = "aider-executor";
@@ -19,12 +20,12 @@ cli.option(
   "Appends aider-specific notes to message prompts",
   { default: true }
 );
-cli.option(
-  "--whitelist <path>",
-  "Only allow operations within the path (wildcards allowed)"
-);
+cli.option("--whitelist <path>", "Only allow operations within the glob path");
 const parsed = cli.parse();
-const whitelist: string[] = [parsed.options.whitelist].flat().filter(Boolean);
+const whitelist: string[] = [parsed.options.whitelist]
+  .flat()
+  .filter(Boolean)
+  .map(toPosixPath);
 const defaultModel: string | null = parsed.options.model ?? null;
 const defaultEditorModel: string | null = parsed.options.editorModel ?? null;
 const isAppendMessage: boolean = parsed.options.addMessageNotes;

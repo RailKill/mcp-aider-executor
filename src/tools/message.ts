@@ -120,7 +120,8 @@ export function registerMessageTool(
 
         if (architectMode) {
           args.push("--architect");
-          const secondaryModel = editorModel || defaultEditorModel;
+          const secondaryModel =
+            editorModel || defaultEditorModel || primaryModel;
           if (secondaryModel) {
             args.push("--editor-model", secondaryModel);
           }

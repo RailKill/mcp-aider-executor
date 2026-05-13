@@ -1,6 +1,5 @@
 import type { CallToolResult } from "@modelcontextprotocol/server";
 import { spawn } from "child_process";
-import fs from "fs";
 
 export const TASK_STARTED_MESSAGE = "MCP_SIGNAL: TASK_STARTED";
 export const TASK_SUCCESS_MESSAGE = "MCP_SIGNAL: TASK_FINISHED_SUCCESS";
@@ -16,7 +15,12 @@ export async function executeCommand(
       const child = spawn(command, args, {
         shell: true,
         cwd,
-        env: { ...process.env, PYTHONIOENCODING: "utf-8", TERM: "dumb" },
+        env: {
+          ...process.env,
+          PYTHONIOENCODING: "utf-8",
+          PYTHONUNBUFFERED: "1",
+          TERM: "dumb",
+        },
       });
 
       let stdout = "";
@@ -101,28 +105,18 @@ export async function runCommandWithStandardizedOutput(
 export function startBackgroundTask(
   command: string,
   args: string[],
-  cwd: string,
-  logFilePath: string
+  cwd: string
 ) {
-  const out = fs.openSync(logFilePath, "a");
   const child = spawn(command, args, {
     cwd,
     detached: true,
-    stdio: [
-      "ignore", // stdin: ignore (don't wait for user input)
-      out, // stdout: pipe to log file
-      out, // stderr: pipe to log file
-    ],
     shell: true,
-    env: { ...process.env, PYTHONIOENCODING: "utf-8", TERM: "dumb" },
-  });
-
-  child.on("exit", (code) => {
-    const statusMessage =
-      code === 0
-        ? `\n\n--- ${TASK_SUCCESS_MESSAGE} ---`
-        : `\n\n--- ${TASK_FAILURE_MESSAGE} (code: ${code}) ---`;
-    fs.appendFileSync(logFilePath, statusMessage);
+    env: {
+      ...process.env,
+      PYTHONIOENCODING: "utf-8",
+      PYTHONUNBUFFERED: "1",
+      TERM: "dumb",
+    },
   });
 
   child.unref();

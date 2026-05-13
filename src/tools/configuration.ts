@@ -233,10 +233,6 @@ export const AiderConfigurationSchema = z.object({
     .describe("Skip the sanity check for the git repository (default: False)."),
 
   // fixing and committing
-  lint: z
-    .boolean()
-    .optional()
-    .describe("Lint and fix provided files, or dirty files if none provided."),
   "lint-cmd": z
     .array(z.string())
     .optional()
@@ -254,6 +250,7 @@ export const AiderConfigurationSchema = z.object({
   "auto-test": z
     .boolean()
     .optional()
+    .default(false)
     .describe(
       "Enable/disable automatic testing after changes (default: False)."
     ),
@@ -277,7 +274,11 @@ export const AiderConfigurationSchema = z.object({
     .describe(
       "Specify the language to use in the commit message (default: None, user language)."
     ),
-  verbose: z.boolean().optional().describe("Enable verbose output."),
+  verbose: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe("Enable verbose output."),
 });
 
 export function registerConfigTools(server: McpServer, whitelist: string[]) {

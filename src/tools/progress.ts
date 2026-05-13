@@ -3,14 +3,12 @@ import { z } from "zod";
 import {
   getErrorOutput,
   getTextOutput,
-  hasCompletionSignal,
   isProcessAlive,
 } from "../utils/executor.js";
 import {
   DirectoryError,
   getFileTail,
   getJSONFile,
-  getRawFile,
   getValidDirectory,
   joinPaths,
 } from "../utils/filesystem.js";
@@ -23,12 +21,8 @@ export const RunDetailsSchema = z.object({
 });
 export type RunDetails = z.infer<typeof RunDetailsSchema>;
 
-export const PROGRESS_LOG_FILENAME = ".aider.mcp.progress.txt";
+export const DEFAULT_CHAT_HISTORY_FILENAME = ".aider.chat.history.md";
 export const RUN_DETAILS_FILENAME = ".aider.mcp.details.json";
-
-export function getProgressLogPath(directory: string): string {
-  return joinPaths(directory, PROGRESS_LOG_FILENAME);
-}
 
 export function getRunDetailsPath(directory: string): string {
   return joinPaths(directory, RUN_DETAILS_FILENAME);
@@ -39,22 +33,34 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
     "aider_check_progress",
     {
       description:
-        `Reads the last X lines from '${PROGRESS_LOG_FILENAME}' in the given directory to see if ` +
+        "Reads the last X lines from the Aider chat history file and checks if " +
         "the previous Aider run is still in progress.",
       inputSchema: z.object({
         directory: z
           .string()
-          .describe("The absolute path to the project's git repository."),
+          .describe(
+            "The directory containing the chat history file (usually the same directory as " +
+              "the project's git repository root)."
+          ),
+        chatHistoryFilename: z
+          .string()
+          .default(DEFAULT_CHAT_HISTORY_FILENAME)
+          .describe(
+            "The name of the Aider chat history file. If unknown, use the default value " +
+              "or try looking up the Aider configuration YAML for the custom chat history filename."
+          ),
         lines: z
           .number()
+          .min(5)
+          .max(100)
           .default(12)
           .describe(
-            "Number of lines to read from the progress file starting from the end."
+            "Number of lines to read from the file starting from the end."
           ),
       }),
     },
 
-    async ({ directory, lines }) => {
+    async ({ directory, chatHistoryFilename, lines }) => {
       if (!isAllowed(directory, whitelist)) {
         return getDeniedOutput(directory);
       }
@@ -62,9 +68,8 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
       try {
         // read the progress log file
         const workingDir = await getValidDirectory(directory);
-        const progressFilePath = getProgressLogPath(workingDir);
-        const progressLines = await getFileTail(progressFilePath, lines);
-        const isOver = hasCompletionSignal(progressLines);
+        const chatHistoryFilePath = joinPaths(workingDir, chatHistoryFilename);
+        const chatLines = await getFileTail(chatHistoryFilePath, lines);
 
         // read the run details json
         const detailsFilePath = getRunDetailsPath(workingDir);
@@ -75,32 +80,29 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
         // determine process status if processId is present
         let processStatus: string = detailsData.startedOn
           ? "unknown"
-          : "never started";
+          : "not started";
         if (detailsData.processId !== null) {
           processStatus = isProcessAlive(detailsData.processId)
             ? "alive"
             : "terminated";
         }
-        const isDead =
-          processStatus === "terminated" || processStatus === "never started";
-        const isFinished = isOver || isDead;
 
         // report status data
         const statusData = JSON.stringify({
-          runStatus: isFinished ? "finished" : "running",
           processStatus,
           ...detailsData,
-          lastLinesAmount: lines,
-          lastLinesText: progressLines,
+          lastLinesCount: lines,
+          lastLinesText: chatLines,
         });
 
-        const statusMessage = isFinished
+        const isTerminated = processStatus === "terminated";
+        const statusMessage = isTerminated
           ? "has finished"
-          : "is still in progress";
+          : "is still pending or in progress";
 
         return getTextOutput(
-          !isFinished,
-          `The last Aider run ${statusMessage}.`,
+          true,
+          `The last Aider process ${statusMessage}.`,
           statusData
         );
       } catch (error) {
@@ -112,59 +114,15 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
           "code" in error &&
           error.code == "ENOENT"
         ) {
-          // case when the progress or status files do not exist, isError is set to false
+          // case when the run details file do not exist, isError is set to false
           return getTextOutput(
             false,
-            "Progress file does not exist. Aider is clear to run in the directory."
+            "Run details file does not exist. Aider is clear to run in the directory."
           );
         } else {
           // other error scenarios
-          return getErrorOutput(error, "Failed to read the status file.");
+          return getErrorOutput(error, "Failed to read the run details file.");
         }
-      }
-    }
-  );
-
-  server.registerTool(
-    "aider_check_chat_history",
-    {
-      description:
-        "Reads the entire Aider chat history for a given project. " +
-        "Use this tool if you need to investigate what went wrong while prompting Aider.",
-      inputSchema: z.object({
-        directory: z
-          .string()
-          .describe(
-            "The directory containing the chat history file (usually the same directory as " +
-              "the project's git repository root)."
-          ),
-        chatHistoryFilename: z
-          .string()
-          .default(".aider.chat.history.md")
-          .describe(
-            "The name of the Aider chat history file. If unknown, use the default value " +
-              "or try looking up the Aider configuration YAML for the custom chat history filename."
-          ),
-      }),
-    },
-
-    async ({ directory, chatHistoryFilename }) => {
-      if (!isAllowed(directory, whitelist)) {
-        return getDeniedOutput(directory);
-      }
-
-      try {
-        // read the progress log file
-        const workingDir = await getValidDirectory(directory);
-        const fullPath = joinPaths(workingDir, chatHistoryFilename);
-        const configData = getRawFile(fullPath);
-        return getTextOutput(
-          false,
-          `Aider chat history successfully retrived from: ${fullPath}`,
-          configData
-        );
-      } catch (error) {
-        return getErrorOutput(error, "Unable to read chat history file");
       }
     }
   );

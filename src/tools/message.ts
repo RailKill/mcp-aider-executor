@@ -19,6 +19,7 @@ export function registerMessageTool(
   server: McpServer,
   whitelist: string[],
   defaultModel: string | null,
+  defaultEditorModel: string | null,
   isAppendMessage: boolean
 ) {
   server.registerTool(
@@ -51,6 +52,23 @@ export function registerMessageTool(
               "Only provide if the user explicitly requests a non-default model. " +
               "This is because the user may specify a default override via the MCP server configuration."
           ),
+        architectMode: z
+          .boolean()
+          .default(false)
+          .describe(
+            "Architect Mode is a two-stage workflow that separates code reasoning from code editing. " +
+              "It uses the main 'model' for high-level planning capabilities and advanced reasoning, " +
+              "then delegates the precise file modifications to a specialized 'editorModel'. " +
+              "Only set this to true if the user explicitly requests for architect mode."
+          ),
+        editorModel: z
+          .string()
+          .optional()
+          .describe(
+            "Secondary editor model for Aider's architect mode. " +
+              "Only provide if the user explicitly requests a non-default editor model and " +
+              "if running in architect mode."
+          ),
         files: z
           .array(z.string())
           .optional()
@@ -61,7 +79,14 @@ export function registerMessageTool(
       }),
     },
 
-    async ({ directory, message, model, files }) => {
+    async ({
+      directory,
+      message,
+      model,
+      architectMode,
+      editorModel,
+      files,
+    }) => {
       if (!isAllowed(directory, whitelist)) {
         return getDeniedOutput(directory);
       }
@@ -88,9 +113,17 @@ export function registerMessageTool(
           "--no-show-release-notes",
         ];
 
-        const selectedModel = model || defaultModel;
-        if (selectedModel) {
-          args.push("--model", selectedModel);
+        const primaryModel = model || defaultModel;
+        if (primaryModel) {
+          args.push("--model", primaryModel);
+        }
+
+        if (architectMode) {
+          args.push("--architect");
+          const secondaryModel = editorModel || defaultEditorModel;
+          if (secondaryModel) {
+            args.push("--editor-model", secondaryModel);
+          }
         }
 
         if (files) {

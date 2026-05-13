@@ -9,15 +9,16 @@ import {
   DirectoryError,
   getFileTail,
   getJSONFile,
+  getRawFile,
   getValidDirectory,
   joinPaths,
 } from "../utils/filesystem.js";
 import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
+import { PROMPT_MESSAGE_FILENAME } from "./message.js";
 
 export const RunDetailsSchema = z.object({
   processId: z.number().nullable().default(null),
   startedOn: z.coerce.date().nullable().default(null),
-  originalPrompt: z.string().default(""),
 });
 export type RunDetails = z.infer<typeof RunDetailsSchema>;
 
@@ -126,6 +127,39 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
           // other error scenarios
           return getErrorOutput(error, "Failed to read the run details file.");
         }
+      }
+    }
+  );
+
+  server.registerTool(
+    "aider_check_last_prompt",
+    {
+      description:
+        "Reads the last message prompt sent to Aider. " +
+        "Use this tool if you do not have any memory of what message was last sent to Aider " +
+        "for the given directory, or if you need to double-check and troubleshoot problems with the prompt.",
+      inputSchema: z.object({
+        directory: z
+          .string()
+          .describe("The absolute path to the project's git repository."),
+      }),
+    },
+
+    async ({ directory }) => {
+      if (!isAllowed(directory, whitelist)) {
+        return getDeniedOutput(directory);
+      }
+
+      try {
+        const workingDir = await getValidDirectory(directory);
+        const fullPath = joinPaths(workingDir, PROMPT_MESSAGE_FILENAME);
+        const promptText = getRawFile(fullPath);
+        return getTextOutput(false, promptText);
+      } catch (error) {
+        return getErrorOutput(
+          error,
+          "Failed to read the latest Aider message file."
+        );
       }
     }
   );

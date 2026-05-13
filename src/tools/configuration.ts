@@ -349,11 +349,7 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
         const workingDir = await getValidDirectory(directory);
         const fullPath = joinPaths(workingDir, AIDER_CONF_FILENAME);
         const configData = getRawFile(fullPath);
-        return getTextOutput(
-          false,
-          `Aider configuration successfully retrived from: ${fullPath}`,
-          configData
-        );
+        return getTextOutput(false, configData);
       } catch (error) {
         return getErrorOutput(
           error,
@@ -371,10 +367,7 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
     },
     async () => {
       try {
-        return getTextOutput(
-          false,
-          `Allowed paths: ${JSON.stringify(whitelist)}`
-        );
+        return getTextOutput(false, JSON.stringify(whitelist));
       } catch (error) {
         return getErrorOutput(error, "Failed to retrieve whitelist");
       }

@@ -13,7 +13,7 @@ import {
 import { getRunDetailsPath, type RunDetails } from "./progress.js";
 import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
 
-const PROMPT_MESSAGE_FILENAME = ".aider.mcp.prompt.txt";
+export const PROMPT_MESSAGE_FILENAME = ".aider.mcp.prompt.txt";
 
 export function registerMessageTool(
   server: McpServer,
@@ -143,7 +143,6 @@ export function registerMessageTool(
         const runDetails: RunDetails = {
           processId: pid ?? null,
           startedOn: new Date(),
-          originalPrompt: message,
         };
         await createNewFile(runDetailsPath, JSON.stringify(runDetails));
 

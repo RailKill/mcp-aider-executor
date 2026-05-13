@@ -27,7 +27,7 @@ export function createMockServer() {
   return { mockServer, handlers };
 }
 
-export function expectGenericRunCommand(
+export function expectGenericRunCommandCall(
   command: string,
   args: (string | unknown)[],
   cwd: string,
@@ -42,7 +42,7 @@ export function expectGenericRunCommand(
   );
 }
 
-export function expectGenericErrorOutput() {
+export function expectGenericErrorOutputCall() {
   expect(getErrorOutput).toHaveBeenCalledWith(
     expect.any(Error),
     expect.stringMatching(/failed/i)

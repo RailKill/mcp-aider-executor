@@ -10,8 +10,8 @@ import {
 } from "../utils/executor.js";
 import {
   createMockServer,
-  expectGenericErrorOutput as expectGenericErrorOutputCall,
-  expectGenericRunCommand as expectGenericRunCommandCall,
+  expectGenericErrorOutputCall,
+  expectGenericRunCommandCall,
   type McpFunction,
 } from "./test-utils.js";
 

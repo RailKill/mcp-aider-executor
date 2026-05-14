@@ -37,8 +37,14 @@ Provide `--whitelist` arguments with a permitted glob path otherwise all operati
 }
 ```
 
+## Prompting
+You can directly tell your LLM to use Aider by providing them with a directory to work in. For example:
+```
+Use Aider to create a simple Python hello world console application in "/home/my-project"
+```
 
-# Options
+
+## Options
 ```
 -h, --help              Display this message
 --model <model>         Default LLM main model override
@@ -49,7 +55,7 @@ Provide `--whitelist` arguments with a permitted glob path otherwise all operati
 ```
 
 
-# Environment Prerequisites
+## Environment Prerequisites
 The environment running the MCP server must have the following tools installed and available as executable
 commands in the shell:
 1. node
@@ -64,5 +70,17 @@ commands in the shell:
 > You still need the `openai/` prefix when specifying model names for local endpoints in `aider`.
 
 
-# Available MCP Tools
+## Available MCP Tools
 These are the list of MCP tools available for your LLM to call.
+
+- `aider_check_git_log`: Checks recent commits.
+- `aider_check_git_status`: Calls `git status --short` to check the state of the given directory.
+- `aider_check_last_prompt`: Returns the original prompt message of the last Aider run.
+- `aider_check_progress`: Checks the Aider chat history and background process status.
+- `aider_checkout_git_branch`: Switches git branches, creating a new one if it doesn't exist.
+- `aider_create_git_stash`: Stashes everything to clear the directory for Aider (`git stash -u`).
+- `aider_list_git_branches`: Returns a list of git branches in the given directory.
+- `aider_mcp_check_whitelist`: Checks what glob paths are whitelisted for this Aider MCP server.
+- `aider_message_prompt`: Starts `aider` as a background process with a given message prompt.
+- `aider_read_config_yaml`: Returns the full content of the .aider.conf.yml in the directory.
+- `aider_setup_config_yaml`: Creates the .aider.conf.yml file in the directory.

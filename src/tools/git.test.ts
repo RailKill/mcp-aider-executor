@@ -44,7 +44,7 @@ describe("git mcp tools", () => {
   });
 
   describe("aider_check_git_status", () => {
-    it("should call the git status command", async () => {
+    it("calls the git status command", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
 
       const handler = handlers.get("aider_check_git_status")!;
@@ -58,7 +58,7 @@ describe("git mcp tools", () => {
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
 
-    it("should return error output if failed to start command", async () => {
+    it("returns error output if failed to start command", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
       vi.mocked(runCommandWithStandardizedOutput).mockImplementation(() => {
         throw new Error(errorMessage);
@@ -76,7 +76,7 @@ describe("git mcp tools", () => {
       expect(result).toBe(errorOutput);
     });
 
-    it("should check the whitelist before running", async () => {
+    it("checks the whitelist before running", async () => {
       vi.mocked(isAllowed).mockReturnValue(false);
       const handler = handlers.get("aider_check_git_status")!;
       const result = await handler({ directory });
@@ -88,7 +88,7 @@ describe("git mcp tools", () => {
   describe("aider_checkout_git_branch", () => {
     const branch = "test-branch";
 
-    it("should call the git checkout command when switching branches", async () => {
+    it("calls the git checkout command when switching branches", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
 
       const handler = handlers.get("aider_checkout_git_branch")!;
@@ -97,7 +97,7 @@ describe("git mcp tools", () => {
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
 
-    it("should call git checkout with -b flag when creating a new branch", async () => {
+    it("calls git checkout with -b flag when creating a new branch", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
 
       const handler = handlers.get("aider_checkout_git_branch")!;
@@ -111,7 +111,7 @@ describe("git mcp tools", () => {
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
 
-    it("should return error output if failed to start command", async () => {
+    it("returns error output if failed to start command", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
       vi.mocked(runCommandWithStandardizedOutput).mockImplementation(() => {
         throw new Error(errorMessage);
@@ -129,7 +129,7 @@ describe("git mcp tools", () => {
       expect(result).toBe(errorOutput);
     });
 
-    it("should check the whitelist before running", async () => {
+    it("checks the whitelist before running", async () => {
       vi.mocked(isAllowed).mockReturnValue(false);
       const handler = handlers.get("aider_checkout_git_branch")!;
       const result = await handler({ directory });
@@ -139,7 +139,7 @@ describe("git mcp tools", () => {
   });
 
   describe("aider_list_git_branches", () => {
-    it("should call the git branch command", async () => {
+    it("calls the git branch command", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
 
       const handler = handlers.get("aider_list_git_branches")!;
@@ -152,7 +152,7 @@ describe("git mcp tools", () => {
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
 
-    it("should return error output if failed to start command", async () => {
+    it("returns error output if failed to start command", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
       vi.mocked(runCommandWithStandardizedOutput).mockImplementation(() => {
         throw new Error(errorMessage);
@@ -169,7 +169,7 @@ describe("git mcp tools", () => {
       expect(result).toBe(errorOutput);
     });
 
-    it("should check the whitelist before running", async () => {
+    it("checks the whitelist before running", async () => {
       vi.mocked(isAllowed).mockReturnValue(false);
       const handler = handlers.get("aider_list_git_branches")!;
       const result = await handler({ directory });
@@ -179,7 +179,7 @@ describe("git mcp tools", () => {
   });
 
   describe("aider_create_git_stash", () => {
-    it("should call the git stash command", async () => {
+    it("calls the git stash command", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
 
       const handler = handlers.get("aider_create_git_stash")!;
@@ -188,7 +188,7 @@ describe("git mcp tools", () => {
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
 
-    it("should return error output if failed to start command", async () => {
+    it("returns error output if failed to start command", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
       vi.mocked(runCommandWithStandardizedOutput).mockImplementation(() => {
         throw new Error(errorMessage);
@@ -201,7 +201,7 @@ describe("git mcp tools", () => {
       expect(result).toBe(errorOutput);
     });
 
-    it("should check the whitelist before running", async () => {
+    it("checks the whitelist before running", async () => {
       vi.mocked(isAllowed).mockReturnValue(false);
       const handler = handlers.get("aider_create_git_stash")!;
       const result = await handler({ directory });
@@ -211,7 +211,7 @@ describe("git mcp tools", () => {
   });
 
   describe("aider_check_git_log", () => {
-    it("should call the git stash command", async () => {
+    it("calls the git stash command", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
 
       const handler = handlers.get("aider_check_git_log")!;
@@ -224,7 +224,7 @@ describe("git mcp tools", () => {
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
 
-    it("should return error output if failed to start command", async () => {
+    it("returns error output if failed to start command", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
       vi.mocked(runCommandWithStandardizedOutput).mockImplementation(() => {
         throw new Error(errorMessage);
@@ -241,7 +241,7 @@ describe("git mcp tools", () => {
       expect(result).toBe(errorOutput);
     });
 
-    it("should check the whitelist before running", async () => {
+    it("checks the whitelist before running", async () => {
       vi.mocked(isAllowed).mockReturnValue(false);
       const handler = handlers.get("aider_check_git_log")!;
       const result = await handler({ directory });

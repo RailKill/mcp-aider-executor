@@ -1,9 +1,5 @@
-import { expect, vi } from "vitest";
-import type { McpServer } from "@modelcontextprotocol/server";
-import {
-  getErrorOutput,
-  runCommandWithStandardizedOutput,
-} from "../utils/executor.js";
+import { vi } from "vitest";
+import type { CallToolResult, McpServer } from "@modelcontextprotocol/server";
 
 export type McpFunction = (...args: unknown[]) => unknown;
 
@@ -27,24 +23,16 @@ export function createMockServer() {
   return { mockServer, handlers };
 }
 
-export function expectGenericRunCommandCall(
-  command: string,
-  args: (string | unknown)[],
-  cwd: string,
-  hasDefaultSuccessMessage: boolean = false
-) {
-  const runArguments = [command, args, cwd, expect.stringMatching(/\S+/)];
-  if (hasDefaultSuccessMessage) {
-    runArguments.push(expect.stringMatching(/\S+/));
-  }
-  expect(runCommandWithStandardizedOutput).toHaveBeenCalledWith(
-    ...runArguments
-  );
+export function createDenyOutput(): CallToolResult {
+  return {
+    isError: true,
+    content: [{ type: "text", text: "denied" }],
+  };
 }
 
-export function expectGenericErrorOutputCall() {
-  expect(getErrorOutput).toHaveBeenCalledWith(
-    expect.any(Error),
-    expect.stringMatching(/failed/i)
-  );
+export function createErrorOutput(): CallToolResult {
+  return {
+    isError: true,
+    content: [{ type: "text", text: "error" }],
+  };
 }

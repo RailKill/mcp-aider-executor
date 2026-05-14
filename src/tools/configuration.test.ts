@@ -1,16 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { CallToolResult, McpServer } from "@modelcontextprotocol/server";
-import { createMockServer, type McpFunction } from "./test-utils.js";
-import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
+import type { McpServer } from "@modelcontextprotocol/server";
+import {
+  createDenyOutput,
+  createErrorOutput,
+  createMockServer,
+  type McpFunction,
+} from "./test-utils.js";
+import { getErrorOutput, getTextOutput } from "../utils/executor.js";
 import {
   createNewFile,
   getRawFile,
   getValidDirectory,
   joinPaths,
 } from "../utils/filesystem.js";
+import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
 import { AIDER_CONF_FILENAME, registerConfigTools } from "./configuration.js";
 import yaml from "yaml";
-import { getErrorOutput, getTextOutput } from "../utils/executor.js";
 
 vi.mock("../utils/executor");
 vi.mock("../utils/filesystem");
@@ -20,14 +25,8 @@ describe("configuration mcp tools", () => {
   let mockServer: McpServer;
   let handlers: Map<string, McpFunction>;
   const directory = "/config-test";
-  const denyOutput: CallToolResult = {
-    isError: true,
-    content: [{ type: "text", text: "config whitelist denied" }],
-  };
-  const errorOutput: CallToolResult = {
-    isError: true,
-    content: [{ type: "text", text: "config error" }],
-  };
+  const denyOutput = createDenyOutput();
+  const errorOutput = createErrorOutput();
   const joinedPath = `${directory}/${AIDER_CONF_FILENAME}`;
   const whitelist = ["/abc/*", "/wee/**.js"];
 

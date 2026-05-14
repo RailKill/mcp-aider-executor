@@ -1,6 +1,6 @@
 // src/tools/git.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { CallToolResult, McpServer } from "@modelcontextprotocol/server";
+import type { McpServer } from "@modelcontextprotocol/server";
 import { registerGitTools } from "./git.js";
 import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
 import { getValidDirectory } from "../utils/filesystem.js";
@@ -9,9 +9,9 @@ import {
   runCommandWithStandardizedOutput,
 } from "../utils/executor.js";
 import {
+  createDenyOutput,
+  createErrorOutput,
   createMockServer,
-  expectGenericErrorOutputCall,
-  expectGenericRunCommandCall,
   type McpFunction,
 } from "./test-utils.js";
 
@@ -19,19 +19,35 @@ vi.mock("../utils/executor");
 vi.mock("../utils/filesystem");
 vi.mock("../utils/whitelist");
 
+function expectGenericRunCommandCall(
+  command: string,
+  args: (string | unknown)[],
+  cwd: string,
+  hasDefaultSuccessMessage: boolean = false
+) {
+  const runArguments = [command, args, cwd, expect.stringMatching(/\S+/)];
+  if (hasDefaultSuccessMessage) {
+    runArguments.push(expect.stringMatching(/\S+/));
+  }
+  expect(runCommandWithStandardizedOutput).toHaveBeenCalledWith(
+    ...runArguments
+  );
+}
+
+function expectGenericErrorOutputCall() {
+  expect(getErrorOutput).toHaveBeenCalledWith(
+    expect.any(Error),
+    expect.stringMatching(/failed/i)
+  );
+}
+
 describe("git mcp tools", () => {
   let mockServer: McpServer;
   let handlers: Map<string, McpFunction>;
-  const directory = "/some-other-dir";
-  const denyOutput: CallToolResult = {
-    isError: true,
-    content: [{ type: "text", text: "DENIED!!!" }],
-  };
+  const directory = "/git-tool";
+  const denyOutput = createDenyOutput();
   const errorMessage = "unit test simulated error message";
-  const errorOutput: CallToolResult = {
-    isError: true,
-    content: [{ type: "text", text: "hello test" }],
-  };
+  const errorOutput = createErrorOutput();
 
   beforeEach(() => {
     vi.mocked(getValidDirectory).mockResolvedValue(directory);

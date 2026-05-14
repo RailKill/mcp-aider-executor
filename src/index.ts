@@ -8,7 +8,7 @@ import { registerProgressTool } from "./tools/progress.js";
 import { toPosixPath } from "./utils/filesystem.js";
 
 // Define console arguments.
-export const APPLICATION_NAME = "mcp-aider-executor";
+const APPLICATION_NAME = "mcp-aider-executor";
 const cli = cac(APPLICATION_NAME);
 cli.usage(`[options]`);
 cli.help();
@@ -23,14 +23,16 @@ cli.option(
   { default: true }
 );
 cli.option("--whitelist <path>", "Only allow operations within the glob path");
+
+// Read console arguments into variables.
 const parsed = cli.parse();
+const defaultModel: string | null = parsed.options.model ?? null;
+const defaultEditorModel: string | null = parsed.options.editorModel ?? null;
+const isAppendMessage: boolean = parsed.options.addMessageNotes;
 const whitelist: string[] = [parsed.options.whitelist]
   .flat()
   .filter(Boolean)
   .map(toPosixPath);
-const defaultModel: string | null = parsed.options.model ?? null;
-const defaultEditorModel: string | null = parsed.options.editorModel ?? null;
-const isAppendMessage: boolean = parsed.options.addMessageNotes;
 
 if (!parsed.options.help && !parsed.options.h) {
   // Create the MCP server instance.

@@ -1,6 +1,6 @@
 // src/tools/git.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { McpServer, type CallToolResult } from "@modelcontextprotocol/server";
+import type { CallToolResult, McpServer } from "@modelcontextprotocol/server";
 import { registerGitTools } from "./git.js";
 import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
 import { getValidDirectory } from "../utils/filesystem.js";

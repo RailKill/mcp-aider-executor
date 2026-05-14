@@ -9,7 +9,6 @@ import {
 } from "../utils/filesystem.js";
 import yaml from "yaml";
 import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
-import { APPLICATION_NAME } from "../index.js";
 
 export const AIDER_CONF_FILENAME = ".aider.conf.yml";
 
@@ -250,7 +249,6 @@ export const AiderConfigurationSchema = z.object({
   "auto-test": z
     .boolean()
     .optional()
-    .default(false)
     .describe(
       "Enable/disable automatic testing after changes (default: False)."
     ),
@@ -277,8 +275,7 @@ export const AiderConfigurationSchema = z.object({
   verbose: z
     .boolean()
     .optional()
-    .default(false)
-    .describe("Enable verbose output."),
+    .describe("Enable verbose output (default: False)."),
 });
 
 export function registerConfigTools(server: McpServer, whitelist: string[]) {
@@ -362,7 +359,7 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
   server.registerTool(
     "aider_mcp_check_whitelist",
     {
-      description: `Gets the list of glob paths configured in the ${APPLICATION_NAME} MCP server whitelist.`,
+      description: `Gets the list of glob paths configured in the Aider MCP server whitelist.`,
       inputSchema: z.object({}),
     },
     async () => {

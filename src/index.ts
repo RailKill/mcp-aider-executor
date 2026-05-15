@@ -78,7 +78,7 @@ if (!parsed.options.help && !parsed.options.h) {
   // Create the MCP server instance.
   const server = new McpServer({
     name: APPLICATION_NAME,
-    version: "1.0.2",
+    version: "1.1.0",
   });
 
   // Register the tools available for LLMs to use.

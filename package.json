@@ -30,7 +30,7 @@
   "description": "Model Context Protocol (MCP) server to execute aider-specific code editing operations",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/mcp-aider-executor.git"
+    "url": "git+https://github.com/RailKill/mcp-aider-executor.git"
   },
   "bugs": {
     "url": "https://github.com/RailKill/mcp-aider-executor/issues"

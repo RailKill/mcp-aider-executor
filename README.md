@@ -1,7 +1,7 @@
 # Project Information
 stdio MCP server to run [aider](https://aider.chat/) as a detached background process
-with basic git tools and status checks. This allows LLMs to start code editing processes freely and
-check the `aider` chat history for progress at a later time to allow for agentic swarm behavior.
+with basic [git](https://git-scm.com/) tools and status checks. This allows LLMs to start code editing processes
+freely and check the `aider` chat history for progress at a later time to allow for agentic swarm behavior.
 
 An `.aider.mcp.details.json` file is created in the same directory with the process ID and starting datetime.
 The MCP server provides tools for LLM agents to check if the process is still running,
@@ -42,6 +42,18 @@ You can directly tell your LLM to use Aider by providing them with a directory t
 ```
 Use Aider to create a simple Python hello world console application in "/home/my-project"
 ```
+
+The MCP server only exposes a few override options in the `aider` process call, which are:
+- `--model`
+- `--editor-model`
+- `--architect`
+
+For other options, you should set it properly using environment variables (the `env` in MCP settings .json),
+or ask your LLM to create an Aider YAML configuration file for you.
+
+> [!CAUTION]
+> For security purposes, the MCP server does not have the functionality to write API keys into the configuration.
+> Use `env` instead to provide keys like `OPENAI_API_KEY`. Don't tell your LLM about it.
 
 
 ## Options

@@ -2,6 +2,7 @@
   "name": "mcp-aider-executor",
   "version": "1.0.0",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
     "mcp-aider-executor": "./dist/index.js"
   },
@@ -15,11 +16,26 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "aider",
+    "mcp-server",
+    "llm",
+    "ai-tools"
+  ],
+  "author": "RailKill",
   "license": "MIT",
   "type": "module",
-  "description": "",
+  "description": "Model Context Protocol (MCP) server to execute aider-specific code editing operations",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/mcp-aider-executor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RailKill/mcp-aider-executor/issues"
+  },
+  "homepage": "https://github.com/RailKill/mcp-aider-executor#readme",
   "dependencies": {
     "@cfworker/json-schema": "^4.1.1",
     "@modelcontextprotocol/server": "^2.0.0-alpha.2",

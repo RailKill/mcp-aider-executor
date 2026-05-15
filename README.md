@@ -58,11 +58,10 @@ You can add these arguments in the `npx` command.
 -h, --help                     Display this message
 --model <model>                Default LLM main model override (i.e. always use this model no matter what)
 --edit-format <format>         Main model edit format override, regardless of config or LLM inference
---architect                    Always run in architect mode
---no-architect                 Never run in architect mode (default: true)
+--architect                    Always run in architect mode (--no-architect for never)
 --editor-model <model>         Default secondary editor model override for architect mode
 --editor-edit-format <format>  Editor model's edit format override
---no-add-message-notes         Disables the adding of aider-specific notes to message prompts (default: true)
+--no-add-message-notes         Disables the adding of aider-specific notes to message prompts
 --whitelist <path>             Only allow operations within the glob path
 ```
 

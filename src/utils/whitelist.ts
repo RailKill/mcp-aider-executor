@@ -12,6 +12,6 @@ export function getDeniedOutput(path: string) {
     `Access denied. ${path} is not allowed in the Aider MCP server whitelist.`,
     "Tell the user to add the glob path using the '--whitelist <path>' command line argument " +
       `to the Aider MCP server.`,
-    "No Aider operations are allowed until the directory is whitelisted."
+    "No Aider operations are allowed until the directory is whitelisted.",
   );
 }

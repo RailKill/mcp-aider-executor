@@ -44,7 +44,9 @@ Use Aider to create a simple Python hello world console application in "/home/my
 ```
 
 For extra Aider options, you should set it properly using environment variables (the `env` in MCP settings .json),
-or ask your LLM to create the Aider YAML configuration file for you in the project directory.
+or ask your LLM to create the Aider YAML configuration file for you in the project directory. By default, the
+server comes with some basic git and file tools to allow the LLM to look around. These tools can be disabled via
+the options below if you'd like to use a separate MCP server to handle more advanced functions.
 
 > [!CAUTION]
 > 
@@ -63,6 +65,9 @@ You can add these arguments in the `npx` command.
 --editor-model <model>         Default secondary editor model override for architect mode
 --editor-edit-format <format>  Editor model's edit format override
 --no-add-message-notes         Disables the adding of aider-specific notes to message prompts
+--no-register-git-tools        Disables registration of all git tools for this server
+--no-allow-git-edits           Disables only the git tools which modify the repo history
+--no-register-file-tools       Disables registration of wide file access tools for this server
 --whitelist <path>             Only allow operations within the glob path
 ```
 
@@ -95,8 +100,10 @@ These are the list of MCP tools available for your LLM to call.
 - `aider_checkout_git_branch`: Switches git branches, creating a new one if it doesn't exist.
 - `aider_create_git_stash`: Stashes everything to clear the directory for Aider (`git stash -u`).
 - `aider_git_revert`: Reverts changes from a git commit by its hash.
+- `aider_list_files`: Lists all files in a given directory.
 - `aider_list_git_branches`: Returns a list of git branches in the given directory.
 - `aider_mcp_check_whitelist`: Checks what glob paths are whitelisted for this Aider MCP server.
 - `aider_message_prompt`: Starts `aider` as a background process with a given message prompt.
 - `aider_read_config_yaml`: Returns the full content of the .aider.conf.yml in the directory.
+- `aider_read_file_contents`: Reads the contents of a given filepath.
 - `aider_setup_config_yaml`: Creates the .aider.conf.yml file in the directory.

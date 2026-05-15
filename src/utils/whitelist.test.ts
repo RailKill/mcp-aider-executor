@@ -42,7 +42,7 @@ describe("getDeniedOutput()", () => {
       true,
       expect.stringContaining(`${testPath}`),
       expect.any(String),
-      expect.any(String)
+      expect.any(String),
     );
   });
 });

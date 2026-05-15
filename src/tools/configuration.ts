@@ -33,13 +33,13 @@ export const AiderConfigurationSchema = z.object({
     .string()
     .optional()
     .describe(
-      "Specify a file with context window and costs for unknown models."
+      "Specify a file with context window and costs for unknown models.",
     ),
   alias: z
     .array(z.string())
     .optional()
     .describe(
-      "List of shorthand names for models frequently used (e.g. 'fast:gpt-4o-mini')."
+      "List of shorthand names for models frequently used (e.g. 'fast:gpt-4o-mini').",
     ),
   "reasoning-effort": z
     .string()
@@ -49,7 +49,7 @@ export const AiderConfigurationSchema = z.object({
     .number()
     .optional()
     .describe(
-      "Set the thinking token budget for models that support it. Use 0 to disable. (default: not set)."
+      "Set the thinking token budget for models that support it. Use 0 to disable. (default: not set).",
     ),
   "verify-ssl": z
     .boolean()
@@ -63,32 +63,32 @@ export const AiderConfigurationSchema = z.object({
     .enum(["whole", "diff", "diff-fenced", "udiff"])
     .optional()
     .describe(
-      "Specify what edit format the LLM should use (default depends on model)."
+      "Specify what edit format the LLM should use (default depends on model).",
     ),
   "weak-model": z
     .string()
     .optional()
     .describe(
-      "Specify the model to use for commit messages and chat history summarization (default depends on --model)."
+      "Specify the model to use for commit messages and chat history summarization (default depends on --model).",
     ),
   "editor-model": z
     .string()
     .optional()
     .describe(
-      "Specify the model to use for editor tasks (default depends on --model)."
+      "Specify the model to use for editor tasks (default depends on --model).",
     ),
   "editor-edit-format": z
     .enum(["editor-whole", "editor-diff", "diff-fenced", "udiff"])
     .optional()
     .describe(
-      "Specify the edit format for the editor model (default: depends on editor model)."
+      "Specify the edit format for the editor model (default: depends on editor model).",
     ),
   "max-chat-history-tokens": z
     .number()
     .optional()
     .describe(
       "Soft limit on tokens for chat history, after which summarization begins. " +
-        "If unspecified, defaults to the model's max_chat_history_tokens."
+        "If unspecified, defaults to the model's max_chat_history_tokens.",
     ),
 
   // cache settings
@@ -100,7 +100,7 @@ export const AiderConfigurationSchema = z.object({
     .number()
     .optional()
     .describe(
-      "Number of times to ping at 5min intervals to keep prompt cache warm (default: 0)."
+      "Number of times to ping at 5min intervals to keep prompt cache warm (default: 0).",
     ),
 
   // repomap settings
@@ -108,19 +108,19 @@ export const AiderConfigurationSchema = z.object({
     .number()
     .optional()
     .describe(
-      "Suggested number of tokens to use for repo map, use 0 to disable."
+      "Suggested number of tokens to use for repo map, use 0 to disable.",
     ),
   "map-refresh": z
     .enum(["auto", "always", "files", "manual"])
     .optional()
     .describe(
-      "Control how often the repo map is refreshed. Options: auto, always, files, manual (default: auto)."
+      "Control how often the repo map is refreshed. Options: auto, always, files, manual (default: auto).",
     ),
   "map-multiplier-no-files": z
     .number()
     .optional()
     .describe(
-      "Multiplier for map tokens when no files are specified (default: 2)."
+      "Multiplier for map tokens when no files are specified (default: 2).",
     ),
 
   // history settings
@@ -128,13 +128,13 @@ export const AiderConfigurationSchema = z.object({
     .string()
     .optional()
     .describe(
-      "Specify the chat input history file (default: .aider.input.history)."
+      "Specify the chat input history file (default: .aider.input.history).",
     ),
   "chat-history-file": z
     .string()
     .optional()
     .describe(
-      "Specify the chat history file (default: .aider.chat.history.md)."
+      "Specify the chat history file (default: .aider.chat.history.md).",
     ),
   "restore-chat-history": z
     .boolean()
@@ -144,7 +144,7 @@ export const AiderConfigurationSchema = z.object({
     .string()
     .optional()
     .describe(
-      "Log the conversation with the LLM to this file (for example, .aider.llm.history)."
+      "Log the conversation with the LLM to this file (for example, .aider.llm.history).",
     ),
 
   // git settings
@@ -160,19 +160,19 @@ export const AiderConfigurationSchema = z.object({
     .boolean()
     .optional()
     .describe(
-      "Enable/disable the addition of files listed in .gitignore to Aider's editing scope."
+      "Enable/disable the addition of files listed in .gitignore to Aider's editing scope.",
     ),
   aiderignore: z
     .string()
     .optional()
     .describe(
-      "Specify the aider ignore file (default: .aiderignore in git root)."
+      "Specify the aider ignore file (default: .aiderignore in git root).",
     ),
   "subtree-only": z
     .boolean()
     .optional()
     .describe(
-      "Only consider files in the current subtree of the git repository."
+      "Only consider files in the current subtree of the git repository.",
     ),
   "auto-commits": z
     .boolean()
@@ -182,27 +182,27 @@ export const AiderConfigurationSchema = z.object({
     .boolean()
     .optional()
     .describe(
-      "Enable/disable commits when repo is found dirty (default: True)."
+      "Enable/disable commits when repo is found dirty (default: True).",
     ),
   "attribute-author": z
     .boolean()
     .optional()
     .describe(
       "Attribute aider code changes in the git author name (default: True). " +
-        "If explicitly set to True, overrides --attribute-co-authored-by precedence."
+        "If explicitly set to True, overrides --attribute-co-authored-by precedence.",
     ),
   "attribute-committer": z
     .boolean()
     .optional()
     .describe(
       "Attribute aider commits in the git committer name (default: True). " +
-        "If explicitly set to True, overrides --attribute-co-authored-by precedence for aider edits."
+        "If explicitly set to True, overrides --attribute-co-authored-by precedence for aider edits.",
     ),
   "attribute-commit-message-author": z
     .boolean()
     .optional()
     .describe(
-      "Prefix commit messages with 'aider: ' if aider authored the changes (default: False)."
+      "Prefix commit messages with 'aider: ' if aider authored the changes (default: False).",
     ),
   "attribute-commit-message-committer": z
     .boolean()
@@ -214,13 +214,13 @@ export const AiderConfigurationSchema = z.object({
     .describe(
       "Attribute aider edits using the Co-authored-by trailer in the commit message (default: True). " +
         "If True, this takes precedence over default --attribute-author and --attribute-committer behavior " +
-        "unless they are explicitly set to True."
+        "unless they are explicitly set to True.",
     ),
   "git-commit-verify": z
     .boolean()
     .optional()
     .describe(
-      "Enable/disable git pre-commit hooks with --no-verify (default: False)."
+      "Enable/disable git pre-commit hooks with --no-verify (default: False).",
     ),
   "commit-prompt": z
     .string()
@@ -237,20 +237,20 @@ export const AiderConfigurationSchema = z.object({
     .optional()
     .describe(
       "Specify lint commands to run for different languages, " +
-        "eg: 'python: flake8 --select=...' (can be used multiple times)."
+        "eg: 'python: flake8 --select=...' (can be used multiple times).",
     ),
   "auto-lint": z
     .boolean()
     .optional()
     .describe(
-      "Enable/disable automatic linting after changes (default: True)."
+      "Enable/disable automatic linting after changes (default: True).",
     ),
   "test-cmd": z.string().optional().describe("Specify command to run tests."),
   "auto-test": z
     .boolean()
     .optional()
     .describe(
-      "Enable/disable automatic testing after changes (default: False)."
+      "Enable/disable automatic testing after changes (default: False).",
     ),
 
   // other settings
@@ -258,19 +258,19 @@ export const AiderConfigurationSchema = z.object({
     .boolean()
     .optional()
     .describe(
-      "Never prompt for or attempt to install Playwright for web scraping (default: False)."
+      "Never prompt for or attempt to install Playwright for web scraping (default: False).",
     ),
   "chat-language": z
     .string()
     .optional()
     .describe(
-      "Specify the language to use in the chat (default: None, uses system settings)."
+      "Specify the language to use in the chat (default: None, uses system settings).",
     ),
   "commit-language": z
     .string()
     .optional()
     .describe(
-      "Specify the language to use in the commit message (default: None, user language)."
+      "Specify the language to use in the commit message (default: None, user language).",
     ),
   verbose: z
     .boolean()
@@ -316,15 +316,15 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
 
         return getTextOutput(
           false,
-          `Aider configuration successfully set up: ${fullPath}`
+          `Aider configuration successfully set up: ${fullPath}`,
         );
       } catch (error) {
         return getErrorOutput(
           error,
-          "Failed to setup Aider configuration YAML"
+          "Failed to setup Aider configuration YAML",
         );
       }
-    }
+    },
   );
 
   server.registerTool(
@@ -350,10 +350,10 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
       } catch (error) {
         return getErrorOutput(
           error,
-          "Failed to retrieve Aider configuration YAML"
+          "Failed to retrieve Aider configuration YAML",
         );
       }
-    }
+    },
   );
 
   server.registerTool(
@@ -368,6 +368,6 @@ export function registerConfigTools(server: McpServer, whitelist: string[]) {
       } catch (error) {
         return getErrorOutput(error, "Failed to retrieve whitelist");
       }
-    }
+    },
   );
 }

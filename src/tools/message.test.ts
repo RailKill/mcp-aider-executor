@@ -55,7 +55,7 @@ describe("message mcp tool", () => {
       null,
       editorModel,
       defaultEditorFormat,
-      true
+      true,
     );
   });
 
@@ -75,7 +75,7 @@ describe("message mcp tool", () => {
           "--message-file",
           PROMPT_MESSAGE_FILENAME,
         ]),
-        directory
+        directory,
       );
     });
 
@@ -86,7 +86,7 @@ describe("message mcp tool", () => {
       expect(startBackgroundTask).toHaveBeenCalledWith(
         "aider",
         expect.arrayContaining(["--architect"]),
-        directory
+        directory,
       );
     });
 
@@ -99,7 +99,7 @@ describe("message mcp tool", () => {
         true,
         editorModel,
         defaultEditorFormat,
-        true
+        true,
       );
       vi.mocked(isAllowed).mockReturnValue(true);
       const handler = handlers.get("aider_message_prompt")!;
@@ -107,7 +107,7 @@ describe("message mcp tool", () => {
       expect(startBackgroundTask).toHaveBeenCalledWith(
         "aider",
         expect.arrayContaining(["--architect"]),
-        directory
+        directory,
       );
     });
 
@@ -120,7 +120,7 @@ describe("message mcp tool", () => {
         false,
         editorModel,
         defaultEditorFormat,
-        true
+        true,
       );
       vi.mocked(isAllowed).mockReturnValue(true);
       const handler = handlers.get("aider_message_prompt")!;
@@ -128,7 +128,7 @@ describe("message mcp tool", () => {
       expect(startBackgroundTask).toHaveBeenCalledWith(
         "aider",
         expect.not.arrayContaining(["--architect"]),
-        directory
+        directory,
       );
     });
 
@@ -276,7 +276,7 @@ describe("message mcp tool", () => {
       const regex = new RegExp(`"processId":\\s*${pid}`);
       expect(createNewFile).toHaveBeenCalledWith(
         runPath,
-        expect.stringMatching(regex)
+        expect.stringMatching(regex),
       );
     });
 

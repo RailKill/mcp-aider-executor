@@ -1,4 +1,4 @@
-import { writeFile } from "fs/promises";
+import { readdir, writeFile } from "fs/promises";
 import fs from "fs";
 import path from "path";
 import readline from "readline";
@@ -7,6 +7,13 @@ export class DirectoryError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "DirectoryError";
+  }
+}
+
+export class FileError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "FileError";
   }
 }
 
@@ -29,9 +36,23 @@ export async function getValidDirectory(directory: string): Promise<string> {
   return resolvedPath;
 }
 
+export async function getValidFile(filePath: string): Promise<string> {
+  const resolvedPath = toPosixPath(path.resolve(filePath));
+  if (!fs.existsSync(resolvedPath)) {
+    throw new FileError(`File does not exist: ${resolvedPath}`);
+  }
+
+  const stats = fs.statSync(resolvedPath);
+  if (!stats.isFile()) {
+    throw new FileError(`Path is not a file: ${resolvedPath}`);
+  }
+
+  return resolvedPath;
+}
+
 export async function getFileTail(
   filePath: string,
-  lineCount: number
+  lineCount: number,
 ): Promise<string[]> {
   const stream = fs.createReadStream(filePath);
   const readInterface = readline.createInterface({
@@ -65,6 +86,10 @@ export function getRawFile(path: string): string {
 export function joinPaths(...paths: string[]): string {
   const standardizedPaths = paths.map(toPosixPath);
   return path.posix.join(...standardizedPaths);
+}
+
+export async function listFiles(directory: string): Promise<string[]> {
+  return await readdir(directory);
 }
 
 export function toPosixPath(path: string): string {

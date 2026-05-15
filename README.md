@@ -43,29 +43,27 @@ You can directly tell your LLM to use Aider by providing them with a directory t
 Use Aider to create a simple Python hello world console application in "/home/my-project"
 ```
 
-The MCP server only exposes a few override options in the `aider` process call, which are:
-- `--model`
-- `--edit-format`
-- `--architect`
-- `--editor-model`
-- `--editor-edit-format`
-
-For other options, you should set it properly using environment variables (the `env` in MCP settings .json),
-or ask your LLM to create an Aider YAML configuration file for you.
+For extra Aider options, you should set it properly using environment variables (the `env` in MCP settings .json),
+or ask your LLM to create the Aider YAML configuration file for you in the project directory.
 
 > [!CAUTION]
-> For security purposes, the MCP server does not have the functionality to write API keys into the configuration.
+> For security purposes, the MCP server does not have the functionality to write API keys into the configuration YAML.
 > Use `env` instead to provide keys like `OPENAI_API_KEY`. Don't tell your LLM about it.
 
 
 ## Options
+You can add these arguments in the `npx` command.
+
 ```
--h, --help              Display this message
---model <model>         Default LLM main model override
---editor-model <model>  Default secondary editor model override for architect mode
---add-message-notes     Appends aider-specific notes to message prompts (default: True)
---no-add-message-notes  Disables aider-specific notes to message prompts
---whitelist <path>      Only allow operations within the glob path
+-h, --help                     Display this message
+--model <model>                Default LLM main model override (i.e. always use this model no matter what)
+--edit-format <format>         Main model edit format override, regardless of config or LLM inference
+--architect                    Always run in architect mode
+--no-architect                 Never run in architect mode (default: true)
+--editor-model <model>         Default secondary editor model override for architect mode
+--editor-edit-format <format>  Editor model's edit format override
+--no-add-message-notes         Disables the adding of aider-specific notes to message prompts (default: true)
+--whitelist <path>             Only allow operations within the glob path
 ```
 
 

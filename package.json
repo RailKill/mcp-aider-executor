@@ -4,7 +4,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "mcp-aider-executor": "./dist/index.js"
+    "mcp-aider-executor": "dist/index.js"
   },
   "files": [
     "dist"

@@ -11,6 +11,8 @@ import {
   joinPaths,
   toPosixPath,
   DirectoryError,
+  getValidFile,
+  FileError,
 } from "./filesystem.js";
 
 vi.mock("fs", () => ({
@@ -57,6 +59,31 @@ describe("getValidDirectory()", () => {
     await expect(getValidDirectory("./some-file.txt")).rejects.toThrow(
       /not a directory/i,
     );
+  });
+});
+
+describe("getValidFile()", () => {
+  it("throws FileError if path does not exist", async () => {
+    vi.mocked(fs.existsSync).mockReturnValue(false);
+    await expect(getValidFile("/none.txt")).rejects.toThrow(FileError);
+  });
+
+  it("returns resolved path if file exists", async () => {
+    vi.mocked(fs.existsSync).mockReturnValue(true);
+    vi.mocked(fs.statSync).mockReturnValue({
+      isFile: () => true,
+    } as fs.Stats);
+
+    const result = await getValidFile("./file.md");
+    expect(result).toContain("/file.md");
+  });
+
+  it("throws FileError if path is a directory but not a file", async () => {
+    vi.mocked(fs.existsSync).mockReturnValue(true);
+    vi.mocked(fs.statSync).mockReturnValue({
+      isFile: () => false,
+    } as fs.Stats);
+    await expect(getValidFile("./folder/")).rejects.toThrow(/not a file/i);
   });
 });
 

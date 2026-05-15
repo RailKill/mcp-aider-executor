@@ -6,6 +6,7 @@ import { registerConfigTools } from "./tools/configuration.js";
 import { registerGitTools } from "./tools/git.js";
 import { registerProgressTool } from "./tools/progress.js";
 import { toPosixPath } from "./utils/filesystem.js";
+import { registerFileTools } from "./tools/file.js";
 
 // Define console arguments.
 const APPLICATION_NAME = "mcp-aider-executor";
@@ -38,13 +39,16 @@ cli.option(
 );
 cli.option(
   "--no-register-git-tools",
-  "Disables registration of all MCP git tools for this server",
+  "Disables registration of all git tools for this server",
 );
 cli.option(
   "--no-allow-git-edits",
-  "Disables MCP git tools which modify the repo history",
+  "Disables only the git tools which modify the repo history",
 );
-
+cli.option(
+  "--no-register-file-tools",
+  "Disables registration of wide file access tools for this server",
+);
 cli.option("--whitelist <path>", "Only allow operations within the glob path");
 
 // Read console arguments into variables.
@@ -74,7 +78,7 @@ if (!parsed.options.help && !parsed.options.h) {
   // Create the MCP server instance.
   const server = new McpServer({
     name: APPLICATION_NAME,
-    version: "1.0.0",
+    version: "1.0.2",
   });
 
   // Register the tools available for LLMs to use.
@@ -92,6 +96,9 @@ if (!parsed.options.help && !parsed.options.h) {
   registerProgressTool(server, whitelist);
   if (parsed.options.registerGitTools) {
     registerGitTools(server, whitelist, parsed.options.allowGitEdits);
+  }
+  if (parsed.options.registerFileTools) {
+    registerFileTools(server, whitelist);
   }
 
   // Main function to start the server application.

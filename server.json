@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.RailKill/mcp-aider-executor",
+  "description": "Model Context Protocol (MCP) server to execute aider-specific code editing operations",
+  "repository": {
+    "url": "https://github.com/RailKill/mcp-aider-executor",
+    "source": "github"
+  },
+  "version": "1.0.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "mcp-aider-executor",
+      "version": "1.0.2",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

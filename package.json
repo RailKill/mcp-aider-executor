@@ -1,7 +1,7 @@
 {
   "name": "mcp-aider-executor",
   "version": "1.0.1",
-  "mcpName": "io.github.railkill/mcp-aider-executor",
+  "mcpName": "io.github.RailKill/mcp-aider-executor",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {

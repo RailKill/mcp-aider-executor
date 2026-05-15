@@ -266,18 +266,18 @@ describe("git mcp tools", () => {
     });
   });
 
-  describe("aider_revert_commit", () => {
+  describe("aider_git_revert", () => {
     it("doesn't exist in the tool registry if user disallows edits", async () => {
       handlers.clear();
       registerGitTools(mockServer, [], false);
-      expect(handlers.has("aider_revert_commit")).toBe(false);
+      expect(handlers.has("aider_git_revert")).toBe(false);
     });
 
     it("calls git revert on a given commit hash", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
       const testHash = "dd18e6b922f40d4f5f1fd4d6b0ff8e1db15ab72d";
 
-      const handler = handlers.get("aider_revert_commit")!;
+      const handler = handlers.get("aider_git_revert")!;
       await handler({
         directory,
         commitHash: testHash,
@@ -296,7 +296,7 @@ describe("git mcp tools", () => {
         throw new Error(errorMessage);
       });
 
-      const handler = handlers.get("aider_revert_commit")!;
+      const handler = handlers.get("aider_git_revert")!;
       const result = await handler({ directory, commitHash: "HEAD" });
       expectGenericRunCommandCall(
         "git",
@@ -309,7 +309,7 @@ describe("git mcp tools", () => {
 
     it("checks the whitelist before running", async () => {
       vi.mocked(isAllowed).mockReturnValue(false);
-      const handler = handlers.get("aider_revert_commit")!;
+      const handler = handlers.get("aider_git_revert")!;
       const result = await handler({ directory });
       expect(result).toBe(denyOutput);
       expect(runCommandWithStandardizedOutput).not.toHaveBeenCalled();

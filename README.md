@@ -94,6 +94,7 @@ These are the list of MCP tools available for your LLM to call.
 - `aider_check_progress`: Checks the Aider chat history and background process status.
 - `aider_checkout_git_branch`: Switches git branches, creating a new one if it doesn't exist.
 - `aider_create_git_stash`: Stashes everything to clear the directory for Aider (`git stash -u`).
+- `aider_git_revert`: Reverts changes from a git commit by its hash.
 - `aider_list_git_branches`: Returns a list of git branches in the given directory.
 - `aider_mcp_check_whitelist`: Checks what glob paths are whitelisted for this Aider MCP server.
 - `aider_message_prompt`: Starts `aider` as a background process with a given message prompt.

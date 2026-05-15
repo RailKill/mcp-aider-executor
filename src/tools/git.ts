@@ -189,7 +189,7 @@ export function registerGitTools(
   // these tools are separated because they change the history of the repo
   if (canModify) {
     server.registerTool(
-      "aider_revert_commit",
+      "aider_git_revert",
       {
         description: "Reverts the changes of a given commit hash.",
         inputSchema: z.object({

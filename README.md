@@ -45,8 +45,10 @@ Use Aider to create a simple Python hello world console application in "/home/my
 
 The MCP server only exposes a few override options in the `aider` process call, which are:
 - `--model`
-- `--editor-model`
+- `--edit-format`
 - `--architect`
+- `--editor-model`
+- `--editor-edit-format`
 
 For other options, you should set it properly using environment variables (the `env` in MCP settings .json),
 or ask your LLM to create an Aider YAML configuration file for you.

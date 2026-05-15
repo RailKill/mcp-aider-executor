@@ -52,6 +52,13 @@ export function registerMessageTool(
               "Only provide if the user explicitly requests a non-default model. " +
               "This is because the user may specify a default override via the MCP server configuration."
           ),
+        editFormat: z
+          .enum(["whole", "diff", "diff-fenced", "udiff"])
+          .optional()
+          .describe(
+            "The edit format the LLM should use for the main model. " +
+              "Only provide if the user explicitly requests for edits in a specific format."
+          ),
         architectMode: z
           .boolean()
           .default(false)
@@ -69,6 +76,13 @@ export function registerMessageTool(
               "Only provide if the user explicitly requests a non-default editor model and " +
               "if running in architect mode."
           ),
+        editorEditFormat: z
+          .enum(["editor-whole", "editor-diff", "diff-fenced", "udiff"])
+          .optional()
+          .describe(
+            "The edit format the LLM should use for the editor model in architect mode. " +
+              "Only provide if the user explicitly wants the **editor model** to edit in a specific format."
+          ),
         files: z
           .array(z.string())
           .optional()
@@ -83,8 +97,10 @@ export function registerMessageTool(
       directory,
       message,
       model,
+      editFormat,
       architectMode,
       editorModel,
+      editorEditFormat,
       files,
     }) => {
       if (!isAllowed(directory, whitelist)) {
@@ -118,12 +134,19 @@ export function registerMessageTool(
           args.push("--model", primaryModel);
         }
 
+        if (editFormat) {
+          args.push("--edit-format", editFormat);
+        }
+
         if (architectMode) {
           args.push("--architect");
           const secondaryModel =
             editorModel || defaultEditorModel || primaryModel;
           if (secondaryModel) {
             args.push("--editor-model", secondaryModel);
+          }
+          if (editorEditFormat) {
+            args.push("--editor-edit-format", editorEditFormat);
           }
         }
 

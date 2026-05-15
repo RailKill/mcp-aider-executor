@@ -135,6 +135,17 @@ describe("message mcp tool", () => {
       expect(messageArguments[index + 1]).toBe(defaultModel);
     });
 
+    it("uses edit format argument when provided", async () => {
+      vi.mocked(isAllowed).mockReturnValue(true);
+      const mockBackground = vi.mocked(startBackgroundTask);
+      const handler = handlers.get("aider_message_prompt")!;
+      await handler({ directory, editFormat: "diff" });
+      const calledArguments = mockBackground.mock.calls[0] as unknown[];
+      const messageArguments = calledArguments[1] as string[];
+      const index = messageArguments.indexOf("--edit-format");
+      expect(messageArguments[index + 1]).toBe("diff");
+    });
+
     it("uses editor model argument when provided", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
       const mockBackground = vi.mocked(startBackgroundTask);
@@ -160,6 +171,21 @@ describe("message mcp tool", () => {
       const messageArguments = calledArguments[1] as string[];
       const index = messageArguments.indexOf("--editor-model");
       expect(messageArguments[index + 1]).toBe(editorModel);
+    });
+
+    it("uses editor edit format argument when provided", async () => {
+      vi.mocked(isAllowed).mockReturnValue(true);
+      const mockBackground = vi.mocked(startBackgroundTask);
+      const handler = handlers.get("aider_message_prompt")!;
+      await handler({
+        directory,
+        architectMode: true,
+        editorEditFormat: "editor-diff",
+      });
+      const calledArguments = mockBackground.mock.calls[0] as unknown[];
+      const messageArguments = calledArguments[1] as string[];
+      const index = messageArguments.indexOf("--editor-edit-format");
+      expect(messageArguments[index + 1]).toBe("editor-diff");
     });
 
     it("creates a process status file", async () => {

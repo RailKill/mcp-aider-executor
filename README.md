@@ -47,6 +47,7 @@ For extra Aider options, you should set it properly using environment variables 
 or ask your LLM to create the Aider YAML configuration file for you in the project directory.
 
 > [!CAUTION]
+> 
 > For security purposes, the MCP server does not have the functionality to write API keys into the configuration YAML.
 > Use `env` instead to provide keys like `OPENAI_API_KEY`. Don't tell your LLM about it.
 
@@ -74,10 +75,13 @@ commands in the shell:
 3. git
 
 > [!WARNING]
+>
 > You should set the number of parallel requests to 2 if you are using the same local endpoint for `aider`,
 > otherwise your chat session and the background `aider` process will be stuck waiting for each other.
+> 
 > You should also set the `OPENAI_API_KEY` environment variable to a non-empty value if you are using a local 
 > OpenAI-compatible endpoint because `aider` requires it even if you don't use an API key.
+> 
 > You still need the `openai/` prefix when specifying model names for local endpoints in `aider`.
 
 

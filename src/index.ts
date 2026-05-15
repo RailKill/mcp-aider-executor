@@ -14,28 +14,37 @@ cli.usage(`[options]`);
 cli.help();
 cli.option(
   "--model <model>",
-  "Default LLM main model override (i.e. always use this model no matter what)"
+  "Default LLM main model override (i.e. always use this model no matter what)",
 );
 cli.option(
   "--edit-format <format>",
-  "Main model edit format override, regardless of config or LLM inference"
+  "Main model edit format override, regardless of config or LLM inference",
 );
 cli.option(
   "--architect",
-  "Always run in architect mode (--no-architect for never)"
+  "Always run in architect mode (--no-architect for never)",
 );
 cli.option(
   "--editor-model <model>",
-  "Default secondary editor model override for architect mode"
+  "Default secondary editor model override for architect mode",
 );
 cli.option(
   "--editor-edit-format <format>",
-  "Editor model's edit format override"
+  "Editor model's edit format override",
 );
 cli.option(
   "--no-add-message-notes",
-  "Disables the adding of aider-specific notes to message prompts"
+  "Disables the adding of aider-specific notes to message prompts",
 );
+cli.option(
+  "--no-register-git-tools",
+  "Disables registration of all MCP git tools for this server",
+);
+cli.option(
+  "--no-allow-git-edits",
+  "Disables MCP git tools which modify the repo history",
+);
+
 cli.option("--whitelist <path>", "Only allow operations within the glob path");
 
 // Read console arguments into variables.
@@ -77,11 +86,13 @@ if (!parsed.options.help && !parsed.options.h) {
     forcedArchitect,
     defaultEditorModel,
     defaultEditorFormat,
-    isAppendMessage
+    isAppendMessage,
   );
   registerConfigTools(server, whitelist);
-  registerGitTools(server, whitelist);
   registerProgressTool(server, whitelist);
+  if (parsed.options.registerGitTools) {
+    registerGitTools(server, whitelist, parsed.options.allowGitEdits);
+  }
 
   // Main function to start the server application.
   async function main() {

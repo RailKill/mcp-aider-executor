@@ -44,8 +44,9 @@ Use Aider to create a simple Python hello world console application in "/home/my
 ```
 
 For extra Aider options, you should set it properly using environment variables (the `env` in MCP settings .json),
-or ask your LLM to create the Aider YAML configuration file for you in the project directory. Some git and file
-tools can be disabled using the options below if you prefer using another MCP server to handle those functions.
+or ask your LLM to create the Aider YAML configuration file for you in the project directory. By default, the
+server comes with some basic git and file tools to allow the LLM to look around. These tools can be disabled via
+the options below if you'd like to use a separate MCP server to handle more advanced functions.
 
 > [!CAUTION]
 > 

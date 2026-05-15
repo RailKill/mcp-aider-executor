@@ -48,7 +48,7 @@ export function registerMessageTool(
           .string()
           .optional()
           .describe(
-            "The specific model string for Aider to use (e.g. 'openai/gemma-4-E4B-it-IQ4_XS'). " +
+            "The specific model string for Aider to use. " +
               "Only provide if the user explicitly requests a non-default model. " +
               "This is because the user may specify a default override via the MCP server configuration."
           ),

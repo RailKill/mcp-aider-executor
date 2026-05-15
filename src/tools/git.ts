@@ -7,7 +7,11 @@ import {
 import { getValidDirectory } from "../utils/filesystem.js";
 import { getDeniedOutput, isAllowed } from "../utils/whitelist.js";
 
-export function registerGitTools(server: McpServer, whitelist: string[]) {
+export function registerGitTools(
+  server: McpServer,
+  whitelist: string[],
+  canModify: boolean,
+) {
   server.registerTool(
     "aider_check_git_status",
     {
@@ -31,12 +35,12 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
           ["status", "--short"],
           workingDir,
           "git status command exited with error",
-          "Working tree clean."
+          "Working tree clean.",
         );
       } catch (error) {
         return getErrorOutput(error, "Failed to retrieve git status");
       }
-    }
+    },
   );
 
   server.registerTool(
@@ -74,12 +78,12 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
           args,
           workingDir,
           "git checkout command exited with error",
-          `Successfully switched to ${branch}`
+          `Successfully switched to ${branch}`,
         );
       } catch (error) {
         return getErrorOutput(error, "Failed to execute git checkout");
       }
-    }
+    },
   );
 
   server.registerTool(
@@ -103,12 +107,12 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
           "git",
           ["branch", "--list"],
           workingDir,
-          "git branch command exited with error"
+          "git branch command exited with error",
         );
       } catch (error) {
         return getErrorOutput(error, "Failed to list branches");
       }
-    }
+    },
   );
 
   server.registerTool(
@@ -135,12 +139,12 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
           "git",
           ["stash", "-u"],
           workingDir,
-          "git stash command exited with error"
+          "git stash command exited with error",
         );
       } catch (error) {
         return getErrorOutput(error, "Failed to stash uncommitted changes");
       }
-    }
+    },
   );
 
   server.registerTool(
@@ -174,11 +178,50 @@ export function registerGitTools(server: McpServer, whitelist: string[]) {
             '--pretty=format:"%h - %an, %ar : %s"',
           ],
           workingDir,
-          "git log command exited with error"
+          "git log command exited with error",
         );
       } catch (error) {
         return getErrorOutput(error, "Failed to stash uncommitted changes");
       }
-    }
+    },
   );
+
+  // these tools are separated because they change the history of the repo
+  if (canModify) {
+    server.registerTool(
+      "aider_revert_commit",
+      {
+        description: "Reverts the changes of a given commit hash.",
+        inputSchema: z.object({
+          directory: z
+            .string()
+            .describe("The absolute path to the git repository."),
+          commitHash: z
+            .string()
+            .describe(
+              "The hash of the commit to be reverted. If unknown, check git log, Aider chat history, " +
+                "or ask the user for it. You can also use 'HEAD' for the latest commit. " +
+                "Use this tool to undo mistakes or unwanted changes made by previous Aider runs.",
+            ),
+        }),
+      },
+      async ({ directory, commitHash }) => {
+        if (!isAllowed(directory, whitelist)) {
+          return getDeniedOutput(directory);
+        }
+
+        try {
+          const workingDir = await getValidDirectory(directory);
+          return await runCommandWithStandardizedOutput(
+            "git",
+            ["revert", commitHash, "--no-edit"],
+            workingDir,
+            "git revert command exited with error",
+          );
+        } catch (error) {
+          return getErrorOutput(error, "Failed to revert changes");
+        }
+      },
+    );
+  }
 }

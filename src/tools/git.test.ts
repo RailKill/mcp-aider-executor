@@ -23,21 +23,21 @@ function expectGenericRunCommandCall(
   command: string,
   args: (string | unknown)[],
   cwd: string,
-  hasDefaultSuccessMessage: boolean = false
+  hasDefaultSuccessMessage: boolean = false,
 ) {
   const runArguments = [command, args, cwd, expect.stringMatching(/\S+/)];
   if (hasDefaultSuccessMessage) {
     runArguments.push(expect.stringMatching(/\S+/));
   }
   expect(runCommandWithStandardizedOutput).toHaveBeenCalledWith(
-    ...runArguments
+    ...runArguments,
   );
 }
 
 function expectGenericErrorOutputCall() {
   expect(getErrorOutput).toHaveBeenCalledWith(
     expect.any(Error),
-    expect.stringMatching(/failed/i)
+    expect.stringMatching(/failed/i),
   );
 }
 
@@ -56,7 +56,7 @@ describe("git mcp tools", () => {
     const mockResults = createMockServer();
     mockServer = mockResults.mockServer;
     handlers = mockResults.handlers;
-    registerGitTools(mockServer, []);
+    registerGitTools(mockServer, [], true);
   });
 
   describe("aider_check_git_status", () => {
@@ -69,7 +69,7 @@ describe("git mcp tools", () => {
         "git",
         expect.arrayContaining(["status"]),
         directory,
-        true
+        true,
       );
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
@@ -86,7 +86,7 @@ describe("git mcp tools", () => {
         "git",
         expect.arrayContaining(["status"]),
         directory,
-        true
+        true,
       );
       expectGenericErrorOutputCall();
       expect(result).toBe(errorOutput);
@@ -122,7 +122,7 @@ describe("git mcp tools", () => {
         "git",
         ["checkout", "-b", branch],
         directory,
-        true
+        true,
       );
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
@@ -139,7 +139,7 @@ describe("git mcp tools", () => {
         "git",
         expect.arrayContaining(["checkout"]),
         directory,
-        true
+        true,
       );
       expectGenericErrorOutputCall();
       expect(result).toBe(errorOutput);
@@ -163,7 +163,7 @@ describe("git mcp tools", () => {
       expectGenericRunCommandCall(
         "git",
         expect.arrayContaining(["branch"]),
-        directory
+        directory,
       );
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
@@ -179,7 +179,7 @@ describe("git mcp tools", () => {
       expectGenericRunCommandCall(
         "git",
         expect.arrayContaining(["branch"]),
-        directory
+        directory,
       );
       expectGenericErrorOutputCall();
       expect(result).toBe(errorOutput);
@@ -235,7 +235,7 @@ describe("git mcp tools", () => {
       expectGenericRunCommandCall(
         "git",
         expect.arrayContaining(["log", "-n", "21"]),
-        directory
+        directory,
       );
       expect(getErrorOutput).not.toHaveBeenCalled();
     });
@@ -251,7 +251,7 @@ describe("git mcp tools", () => {
       expectGenericRunCommandCall(
         "git",
         expect.arrayContaining(["log", "-n", "17"]),
-        directory
+        directory,
       );
       expectGenericErrorOutputCall();
       expect(result).toBe(errorOutput);
@@ -260,6 +260,56 @@ describe("git mcp tools", () => {
     it("checks the whitelist before running", async () => {
       vi.mocked(isAllowed).mockReturnValue(false);
       const handler = handlers.get("aider_check_git_log")!;
+      const result = await handler({ directory });
+      expect(result).toBe(denyOutput);
+      expect(runCommandWithStandardizedOutput).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("aider_revert_commit", () => {
+    it("doesn't exist in the tool registry if user disallows edits", async () => {
+      handlers.clear();
+      registerGitTools(mockServer, [], false);
+      expect(handlers.has("aider_revert_commit")).toBe(false);
+    });
+
+    it("calls git revert on a given commit hash", async () => {
+      vi.mocked(isAllowed).mockReturnValue(true);
+      const testHash = "dd18e6b922f40d4f5f1fd4d6b0ff8e1db15ab72d";
+
+      const handler = handlers.get("aider_revert_commit")!;
+      await handler({
+        directory,
+        commitHash: testHash,
+      });
+      expectGenericRunCommandCall(
+        "git",
+        expect.arrayContaining(["revert", testHash, "--no-edit"]),
+        directory,
+      );
+      expect(getErrorOutput).not.toHaveBeenCalled();
+    });
+
+    it("returns error output if failed to call command", async () => {
+      vi.mocked(isAllowed).mockReturnValue(true);
+      vi.mocked(runCommandWithStandardizedOutput).mockImplementation(() => {
+        throw new Error(errorMessage);
+      });
+
+      const handler = handlers.get("aider_revert_commit")!;
+      const result = await handler({ directory, commitHash: "HEAD" });
+      expectGenericRunCommandCall(
+        "git",
+        expect.arrayContaining(["revert", "HEAD", "--no-edit"]),
+        directory,
+      );
+      expectGenericErrorOutputCall();
+      expect(result).toBe(errorOutput);
+    });
+
+    it("checks the whitelist before running", async () => {
+      vi.mocked(isAllowed).mockReturnValue(false);
+      const handler = handlers.get("aider_revert_commit")!;
       const result = await handler({ directory });
       expect(result).toBe(denyOutput);
       expect(runCommandWithStandardizedOutput).not.toHaveBeenCalled();

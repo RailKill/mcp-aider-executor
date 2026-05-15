@@ -70,8 +70,6 @@ if (parsed.options.architect === true) {
   forcedArchitect = false;
 }
 
-console.log(parsed.options);
-
 if (!parsed.options.help && !parsed.options.h) {
   // Create the MCP server instance.
   const server = new McpServer({

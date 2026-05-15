@@ -19,7 +19,10 @@ export function registerMessageTool(
   server: McpServer,
   whitelist: string[],
   defaultModel: string | null,
+  defaultMainFormat: string | null,
+  forcedArchitect: boolean | null,
   defaultEditorModel: string | null,
+  defaultEditorFormat: string | null,
   isAppendMessage: boolean
 ) {
   server.registerTool(
@@ -134,19 +137,24 @@ export function registerMessageTool(
           args.push("--model", primaryModel);
         }
 
-        if (editFormat) {
-          args.push("--edit-format", editFormat);
+        const primaryEditFormat = editFormat || defaultMainFormat;
+        if (primaryEditFormat) {
+          args.push("--edit-format", primaryEditFormat);
         }
 
-        if (architectMode) {
-          args.push("--architect");
-          const secondaryModel =
-            editorModel || defaultEditorModel || primaryModel;
-          if (secondaryModel) {
-            args.push("--editor-model", secondaryModel);
-          }
-          if (editorEditFormat) {
-            args.push("--editor-edit-format", editorEditFormat);
+        if (forcedArchitect !== false) {
+          if (forcedArchitect === true || architectMode) {
+            args.push("--architect");
+            const secondaryModel =
+              editorModel || defaultEditorModel || primaryModel;
+            if (secondaryModel) {
+              args.push("--editor-model", secondaryModel);
+            }
+
+            const secondaryEditFormat = editorEditFormat || defaultEditorFormat;
+            if (secondaryEditFormat) {
+              args.push("--editor-edit-format", secondaryEditFormat);
+            }
           }
         }
 

@@ -32,7 +32,9 @@ describe("message mcp tool", () => {
   let handlers: Map<string, McpFunction>;
   const directory = "/message-tool";
   const defaultModel = "test/main-model";
+  const defaultMainFormat = "format-main";
   const editorModel = "test/editor-model";
+  const defaultEditorFormat = "format-edit";
   const denyOutput = createDenyOutput();
   const errorOutput = createErrorOutput();
   const joinedPath = `${directory}/${PROMPT_MESSAGE_FILENAME}`;
@@ -45,7 +47,16 @@ describe("message mcp tool", () => {
     const mockResults = createMockServer();
     mockServer = mockResults.mockServer;
     handlers = mockResults.handlers;
-    registerMessageTool(mockServer, [], defaultModel, editorModel, true);
+    registerMessageTool(
+      mockServer,
+      [],
+      defaultModel,
+      defaultMainFormat,
+      null,
+      editorModel,
+      defaultEditorFormat,
+      true
+    );
   });
 
   describe("aider_message_prompt", () => {
@@ -75,6 +86,48 @@ describe("message mcp tool", () => {
       expect(startBackgroundTask).toHaveBeenCalledWith(
         "aider",
         expect.arrayContaining(["--architect"]),
+        directory
+      );
+    });
+
+    it("forces the architect option to be enabled if set in arguments", async () => {
+      registerMessageTool(
+        mockServer,
+        [],
+        defaultModel,
+        defaultMainFormat,
+        true,
+        editorModel,
+        defaultEditorFormat,
+        true
+      );
+      vi.mocked(isAllowed).mockReturnValue(true);
+      const handler = handlers.get("aider_message_prompt")!;
+      await handler({ directory, architectMode: false });
+      expect(startBackgroundTask).toHaveBeenCalledWith(
+        "aider",
+        expect.arrayContaining(["--architect"]),
+        directory
+      );
+    });
+
+    it("forces the architect option to be disabled if set in arguments", async () => {
+      registerMessageTool(
+        mockServer,
+        [],
+        defaultModel,
+        defaultMainFormat,
+        false,
+        editorModel,
+        defaultEditorFormat,
+        true
+      );
+      vi.mocked(isAllowed).mockReturnValue(true);
+      const handler = handlers.get("aider_message_prompt")!;
+      await handler({ directory, architectMode: true });
+      expect(startBackgroundTask).toHaveBeenCalledWith(
+        "aider",
+        expect.not.arrayContaining(["--architect"]),
         directory
       );
     });
@@ -146,6 +199,17 @@ describe("message mcp tool", () => {
       expect(messageArguments[index + 1]).toBe("diff");
     });
 
+    it("falls back to default edit format if argument not provided", async () => {
+      vi.mocked(isAllowed).mockReturnValue(true);
+      const mockBackground = vi.mocked(startBackgroundTask);
+      const handler = handlers.get("aider_message_prompt")!;
+      await handler({ directory });
+      const calledArguments = mockBackground.mock.calls[0] as unknown[];
+      const messageArguments = calledArguments[1] as string[];
+      const index = messageArguments.indexOf("--edit-format");
+      expect(messageArguments[index + 1]).toBe(defaultMainFormat);
+    });
+
     it("uses editor model argument when provided", async () => {
       vi.mocked(isAllowed).mockReturnValue(true);
       const mockBackground = vi.mocked(startBackgroundTask);
@@ -186,6 +250,17 @@ describe("message mcp tool", () => {
       const messageArguments = calledArguments[1] as string[];
       const index = messageArguments.indexOf("--editor-edit-format");
       expect(messageArguments[index + 1]).toBe("editor-diff");
+    });
+
+    it("falls back to default editor edit format if argument not provided", async () => {
+      vi.mocked(isAllowed).mockReturnValue(true);
+      const mockBackground = vi.mocked(startBackgroundTask);
+      const handler = handlers.get("aider_message_prompt")!;
+      await handler({ directory, architectMode: true });
+      const calledArguments = mockBackground.mock.calls[0] as unknown[];
+      const messageArguments = calledArguments[1] as string[];
+      const index = messageArguments.indexOf("--editor-edit-format");
+      expect(messageArguments[index + 1]).toBe(defaultEditorFormat);
     });
 
     it("creates a process status file", async () => {

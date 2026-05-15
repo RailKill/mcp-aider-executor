@@ -75,7 +75,7 @@ describe("executeCommand()", () => {
       ["status"],
       expect.objectContaining({
         cwd: "~/something",
-      })
+      }),
     );
     expect(result.code).toBe(0);
     expect(result.stdout).toBe("Working tree clean.");
@@ -95,7 +95,7 @@ describe("executeCommand()", () => {
       ["commit", "-m", "wee"],
       expect.objectContaining({
         cwd: ".",
-      })
+      }),
     );
     expect(result.code).toBe(1);
     expect(result.stderr).toBe(errorMessage);
@@ -110,7 +110,7 @@ describe("executeCommand()", () => {
     vi.mocked(spawn).mockReturnValue(mockProcess);
 
     await expect(executeCommand("git", ["nonsense"], "/")).rejects.toThrow(
-      "spawn failed"
+      "spawn failed",
     );
   });
 
@@ -124,7 +124,7 @@ describe("executeCommand()", () => {
       expect.any(Array),
       expect.objectContaining({
         detached: expect.any(Boolean),
-      })
+      }),
     );
     expect(mockProcess.unref).not.toHaveBeenCalled();
     expect(result.code).not.toBe(555);
@@ -142,7 +142,7 @@ describe("executeCommand()", () => {
       expect.any(Array),
       expect.objectContaining({
         env: expect.objectContaining({ TERM: "dumb" }),
-      })
+      }),
     );
   });
 });
@@ -190,7 +190,7 @@ describe("getTextOutput", () => {
       false,
       "number one",
       "some_other info> 123",
-      "third time's the #charm"
+      "third time's the #charm",
     );
     expect(result).toStrictEqual({
       content: [
@@ -227,7 +227,7 @@ describe("runCommandWithStandardizedOutput", () => {
       ["status"],
       "/home",
       "failure message",
-      "default success message"
+      "default success message",
     );
 
     expect(result).toEqual({
@@ -245,7 +245,7 @@ describe("runCommandWithStandardizedOutput", () => {
       ["checkout"],
       "/yoyo",
       "fail",
-      successMessage
+      successMessage,
     );
 
     expect(result).toEqual({
@@ -266,7 +266,7 @@ describe("runCommandWithStandardizedOutput", () => {
       "git",
       ["status"],
       "/boom",
-      mainError
+      mainError,
     );
 
     expect(result.isError).toBe(true);
@@ -292,7 +292,7 @@ describe("startBackgrondTask()", () => {
         cwd: "/tmp",
         detached: true,
         env: expect.objectContaining({ TERM: "dumb" }),
-      })
+      }),
     );
   });
 
@@ -306,7 +306,7 @@ describe("startBackgrondTask()", () => {
       expect.any(Array),
       expect.objectContaining({
         env: expect.objectContaining({ TERM: "dumb" }),
-      })
+      }),
     );
   });
 });

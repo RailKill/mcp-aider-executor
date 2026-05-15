@@ -31,7 +31,7 @@ export async function getValidDirectory(directory: string): Promise<string> {
 
 export async function getFileTail(
   filePath: string,
-  lineCount: number
+  lineCount: number,
 ): Promise<string[]> {
   const stream = fs.createReadStream(filePath);
   const readInterface = readline.createInterface({

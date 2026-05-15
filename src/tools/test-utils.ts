@@ -9,7 +9,7 @@ export function createMockServer() {
     registerTool: vi.fn(
       (name: string, _config: unknown, handler: McpFunction) => {
         handlers.set(name, handler);
-      }
+      },
     ),
     registerResource: vi.fn(),
     server: {

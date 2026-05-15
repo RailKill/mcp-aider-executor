@@ -61,13 +61,13 @@ describe("configuration mcp tools", () => {
       const yamlArgument = calledArguments[1] as string;
       const yamlObject = yaml.parse(yamlArgument);
       const yamlComparison = Object.fromEntries(
-        Object.entries(handlerArguments).filter(([key]) => key !== "directory")
+        Object.entries(handlerArguments).filter(([key]) => key !== "directory"),
       );
       expect(yamlObject).toEqual(yamlComparison);
 
       expect(createNewFile).toHaveBeenCalledWith(
         joinedPath,
-        expect.stringContaining("med:model2")
+        expect.stringContaining("med:model2"),
       );
     });
 
@@ -125,7 +125,7 @@ describe("configuration mcp tools", () => {
       await handler();
       expect(getTextOutput).toHaveBeenCalledWith(
         false,
-        '["/abc/*","/wee/**.js"]'
+        '["/abc/*","/wee/**.js"]',
       );
     });
 

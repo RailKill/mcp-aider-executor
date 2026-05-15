@@ -55,7 +55,7 @@ describe("getValidDirectory()", () => {
       isDirectory: () => false,
     } as fs.Stats);
     await expect(getValidDirectory("./some-file.txt")).rejects.toThrow(
-      /not a directory/i
+      /not a directory/i,
     );
   });
 });
@@ -78,7 +78,7 @@ describe("getFileTail()", () => {
 describe("getJSONFile()", () => {
   it("parses valid JSON contents into object", () => {
     vi.mocked(fs.readFileSync).mockReturnValue(
-      '{"key": "value", "num-key": 88, "boolKey": true }'
+      '{"key": "value", "num-key": 88, "boolKey": true }',
     );
 
     expect(getJSONFile("good.json")).toEqual({

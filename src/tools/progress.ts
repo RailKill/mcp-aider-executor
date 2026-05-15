@@ -41,14 +41,14 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
           .string()
           .describe(
             "The directory containing the chat history file (usually the same directory as " +
-              "the project's git repository root)."
+              "the project's git repository root).",
           ),
         chatHistoryFilename: z
           .string()
           .default(DEFAULT_CHAT_HISTORY_FILENAME)
           .describe(
             "The name of the Aider chat history file. If unknown, use the default value " +
-              "or try looking up the Aider configuration YAML for the custom chat history filename."
+              "or try looking up the Aider configuration YAML for the custom chat history filename.",
           ),
         lines: z
           .number()
@@ -56,7 +56,7 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
           .max(100)
           .default(12)
           .describe(
-            "Number of lines to read from the file starting from the end."
+            "Number of lines to read from the file starting from the end.",
           ),
       }),
     },
@@ -78,7 +78,7 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
         // read the run details json
         const detailsFilePath = getRunDetailsPath(workingDir);
         const detailsData: RunDetails = RunDetailsSchema.parse(
-          getJSONFile(detailsFilePath)
+          getJSONFile(detailsFilePath),
         );
 
         // determine process status if processId is present
@@ -107,7 +107,7 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
         return getTextOutput(
           true,
           `The last Aider process ${statusMessage}.`,
-          statusData
+          statusData,
         );
       } catch (error) {
         if (error instanceof DirectoryError) {
@@ -121,14 +121,14 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
           // case when the run details file do not exist, isError is set to false
           return getTextOutput(
             false,
-            "Run details file does not exist. Aider is clear to run in the directory."
+            "Run details file does not exist. Aider is clear to run in the directory.",
           );
         } else {
           // other error scenarios
           return getErrorOutput(error, "Failed to read the run details file.");
         }
       }
-    }
+    },
   );
 
   server.registerTool(
@@ -158,9 +158,9 @@ export function registerProgressTool(server: McpServer, whitelist: string[]) {
       } catch (error) {
         return getErrorOutput(
           error,
-          "Failed to read the latest Aider message file."
+          "Failed to read the latest Aider message file.",
         );
       }
-    }
+    },
   );
 }

@@ -4,7 +4,7 @@ import { spawn } from "child_process";
 export async function executeCommand(
   command: string,
   args: string[],
-  cwd: string
+  cwd: string,
 ) {
   return new Promise<{ code: number | null; stdout: string; stderr: string }>(
     (resolve, reject) => {
@@ -27,13 +27,13 @@ export async function executeCommand(
 
       child.on("close", (code) => resolve({ code, stdout, stderr }));
       child.on("error", (error) => reject(error));
-    }
+    },
   );
 }
 
 export function getErrorOutput(
   error: unknown,
-  primary_text: string
+  primary_text: string,
 ): CallToolResult {
   const errorMessage = error instanceof Error ? error.message : String(error);
   return getTextOutput(true, primary_text, errorMessage);
@@ -81,7 +81,7 @@ export async function runCommandWithStandardizedOutput(
   args: string[],
   cwd: string,
   errorMessage: string,
-  defaultSuccessMessage: string = ""
+  defaultSuccessMessage: string = "",
 ): Promise<CallToolResult> {
   const { code, stdout, stderr } = await executeCommand(command, args, cwd);
   if (code === 0) {
@@ -94,7 +94,7 @@ export async function runCommandWithStandardizedOutput(
 export function startBackgroundTask(
   command: string,
   args: string[],
-  cwd: string
+  cwd: string,
 ) {
   const child = spawn(command, args, {
     cwd,

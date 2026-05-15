@@ -23,7 +23,7 @@ export function registerMessageTool(
   forcedArchitect: boolean | null,
   defaultEditorModel: string | null,
   defaultEditorFormat: string | null,
-  isAppendMessage: boolean
+  isAppendMessage: boolean,
 ) {
   server.registerTool(
     "aider_message_prompt",
@@ -45,7 +45,7 @@ export function registerMessageTool(
               "(e.g. 'Refactor the auth middleware to use JWT instead of sessions'). " +
               "Include specific requirements or context needed for the code change to ensure " +
               "the edit is accurate on the first try. Do not include any other operating instructions for git " +
-              "or filesystem management."
+              "or filesystem management.",
           ),
         model: z
           .string()
@@ -53,14 +53,14 @@ export function registerMessageTool(
           .describe(
             "The specific model string for Aider to use. " +
               "Only provide if the user explicitly requests a non-default model. " +
-              "This is because the user may specify a default override via the MCP server configuration."
+              "This is because the user may specify a default override via the MCP server configuration.",
           ),
         editFormat: z
           .enum(["whole", "diff", "diff-fenced", "udiff"])
           .optional()
           .describe(
             "The edit format the LLM should use for the main model. " +
-              "Only provide if the user explicitly requests for edits in a specific format."
+              "Only provide if the user explicitly requests for edits in a specific format.",
           ),
         architectMode: z
           .boolean()
@@ -69,7 +69,7 @@ export function registerMessageTool(
             "Set this to true if the user explicitly requests for architect mode. " +
               "Architect Mode is a two-stage workflow that separates code reasoning from code editing. " +
               "It uses the main 'model' for high-level planning capabilities and advanced reasoning, " +
-              "then delegates the precise file modifications to a specialized 'editorModel'."
+              "then delegates the precise file modifications to a specialized 'editorModel'.",
           ),
         editorModel: z
           .string()
@@ -77,21 +77,21 @@ export function registerMessageTool(
           .describe(
             "Secondary editor model for Aider's architect mode. " +
               "Only provide if the user explicitly requests a non-default editor model and " +
-              "if running in architect mode."
+              "if running in architect mode.",
           ),
         editorEditFormat: z
           .enum(["editor-whole", "editor-diff", "diff-fenced", "udiff"])
           .optional()
           .describe(
             "The edit format the LLM should use for the editor model in architect mode. " +
-              "Only provide if the user explicitly wants the **editor model** to edit in a specific format."
+              "Only provide if the user explicitly wants the **editor model** to edit in a specific format.",
           ),
         files: z
           .array(z.string())
           .optional()
           .describe(
             "An array of relative file paths to include in the edit session. Omit if unknown. " +
-              "Only list files that currently exist; for new files, describe them in the 'message' instead."
+              "Only list files that currently exist; for new files, describe them in the 'message' instead.",
           ),
       }),
     },
@@ -118,7 +118,7 @@ export function registerMessageTool(
           "the internal code blocks to avoid conflicting with the outer Aider action blocks.";
         await createNewFile(
           joinPaths(workingDir, PROMPT_MESSAGE_FILENAME),
-          isAppendMessage ? appendedMessage : message
+          isAppendMessage ? appendedMessage : message,
         );
 
         const args = [
@@ -182,11 +182,11 @@ export function registerMessageTool(
           `Aider detached process successfully started in ${workingDir} (pid: ${pid})`,
           "Aider is running. Do not run anymore Aider commands in this directory for now.",
           "Tell the user you've started the background process.",
-          "Do not check the progress again unless explicitly requested."
+          "Do not check the progress again unless explicitly requested.",
         );
       } catch (error) {
         return getErrorOutput(error, "Failed to run Aider");
       }
-    }
+    },
   );
 }

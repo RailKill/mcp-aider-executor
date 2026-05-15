@@ -17,7 +17,7 @@
 
 # Guidelines
 
-- Pull requests should target the `dev` branch.
+- Test the MCP server with an actual LLM.
 - Write unit tests. Just add a file in the same directory with the `**.test.ts` name format.
 
 

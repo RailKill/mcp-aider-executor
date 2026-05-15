@@ -35,7 +35,7 @@
   "bugs": {
     "url": "https://github.com/RailKill/mcp-aider-executor/issues"
   },
-  "homepage": "https://github.com/RailKill/mcp-aider-executor#readme",
+  "homepage": "https://github.com/RailKill/mcp-aider-executor",
   "dependencies": {
     "@cfworker/json-schema": "^4.1.1",
     "@modelcontextprotocol/server": "^2.0.0-alpha.2",
